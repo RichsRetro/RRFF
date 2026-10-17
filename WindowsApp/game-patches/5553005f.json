@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "title_id": "5553005f",
+  "versions": [
+    {
+      "label": "Rainbow Six : Critical Hour \u2014 no filename patch needed; reported working on Xbox",
+      "folder_name": "Rainbow Six Critical Hour",
+      "default_xbe_sha256": "18a4b6c5ea692669adb4d9b1b6c3ef95607b2f3c64b9c018764bb9e6b060c7ba",
+      "renames": [],
+      "files": []
+    }
+  ]
+}

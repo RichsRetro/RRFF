@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "title_id": "41560049",
+  "versions": [
+    {
+      "default_xbe_sha256": "b88da1b67272eabae3f0a74f11e063ed4e74421809fa94b5a52af79e453424c8",
+      "label": "Tony Hawks American Wasteland \u2014 convert folder to XISO and install a launcher",
+      "folder_name": "Tony Hawks American Wasteland",
+      "install_as_xiso": true,
+      "renames": [],
+      "files": []
+    }
+  ]
+}

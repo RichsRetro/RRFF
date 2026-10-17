@@ -1,0 +1,27 @@
+Rich's Retro XDash Dashboard - Personal, Non-Commercial Source-Available Licence
+
+Copyright (c) 2026 Rich (Rich's Retro XDash project)
+
+1. Permission for personal use
+You may read, inspect, build, compile, run, and modify this source code to make and use your own copies for personal, non-commercial purposes. You may keep your own modifications private. This permission is worldwide, royalty-free, and non-exclusive, subject to the limits below.
+
+2. No commercial use or sale
+You may not use this work or a derivative of it for a commercial purpose. This includes selling or licensing the app or code, charging for access or features, placing it in a paid product or service, or using it to generate revenue through advertising, subscriptions, sponsorship, affiliate links, or similar means.
+
+3. No public rebranded release
+You may not publish, distribute, sublicense, or sell a copy or modified version of the app as your own product, under another brand, or in a way that suggests it is an official Rich's Retro XDash release. Public redistribution of source or app binaries requires prior written permission from the copyright holder. You may share this licence and refer others to the original source project.
+
+4. Notices and branding
+Keep copyright and licence notices in any personal copy of the source. This licence does not grant permission to use Rich’s name, Rich's Retro XDash names, logos, or artwork to endorse another product or imply affiliation.
+
+5. Scope and other components
+This licence applies only to original Rich's Retro dashboard code, original copyrightable modifications, documentation, logos, artwork, and other original assets owned by the copyright holder in this release. It does not apply to the underlying NevolutionX code or other separately licensed third-party material.
+
+NevolutionX code remains licensed under the MIT License, copyright (c) 2019 Lucas Eriksson. Its original licence is retained in dashboard/NevolutionX/LICENSE and third-party-notices/NevolutionX/LICENSE. NXDK, SDL, fonts, and other third-party components retain their own licences and notices. Nothing in this licence restricts the permissions granted for those separately licensed components, including any permitted commercial use or redistribution. See THIRD_PARTY_NOTICES.txt and third-party-notices/.
+
+This licence does not revoke permissions already granted for earlier releases under another licence. A third-party licence does not by itself grant rights to Rich's Retro names, logos, or separately licensed original artwork.
+
+6. No warranty
+The work is provided “AS IS”, without warranties or conditions of any kind, to the extent permitted by law. The copyright holder is not liable for claims or damages arising from use of the work, to the extent permitted by law.
+
+All rights not expressly granted above are reserved. For permission beyond personal, non-commercial use, contact the copyright holder.

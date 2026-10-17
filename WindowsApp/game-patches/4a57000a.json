@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "title_id": "4a57000a",
+  "versions": [
+    {
+      "label": "Ski Racing 2006 \u2014 no filename patch needed; reported working on Xbox",
+      "folder_name": "Ski Racing 2006",
+      "default_xbe_sha256": "f680ca817edd6d2c315e2ad502e89de5b8c01b714313ea1253eb69967b0c65f6",
+      "renames": [],
+      "files": []
+    }
+  ]
+}

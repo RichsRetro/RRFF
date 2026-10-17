@@ -1,0 +1,38 @@
+{
+  "format": 1,
+  "title_id": "54540079",
+  "versions": [
+    {
+      "label": "Midnight Club 3 loading screens \u2014 PAL executable version 6",
+      "default_xbe_sha256": "29d866afda9c54590a854fdfa98cf6e69d871dd3fc02da20bbbf76c3582c7b09",
+      "renames": [
+        {
+          "from_prefix": "flash/loadscreen_career_tokyo_",
+          "to_prefix": "flash/loadscr_career_tokyo_"
+        },
+        {
+          "from_prefix": "flash/loadscreen_career_tournament_",
+          "to_prefix": "flash/loadscr_career_tournament_"
+        }
+      ],
+      "files": [
+        {
+          "path": "default.xbe",
+          "sha256": "29d866afda9c54590a854fdfa98cf6e69d871dd3fc02da20bbbf76c3582c7b09",
+          "patches": [
+            {
+              "offset": 4477184,
+              "before": "6c6f616473637265656e5f6361726565725f746f6b796f5f257300",
+              "after": "6c6f61647363725f6361726565725f746f6b796f5f257300000000"
+            },
+            {
+              "offset": 4477152,
+              "before": "6c6f616473637265656e5f6361726565725f746f75726e616d656e745f257300",
+              "after": "6c6f61647363725f6361726565725f746f75726e616d656e745f257300000000"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

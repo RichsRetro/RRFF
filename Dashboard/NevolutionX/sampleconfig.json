@@ -1,0 +1,79 @@
+{
+    "settings":
+    {
+        "network":
+        {
+            "enable": true,
+            "use_dhcp": true,
+            "static_ip": "10.0.1.7",
+            "static_gateway": "10.0.1.1",
+            "static_netmask": "255.255.255.0",
+            "static_dns1": "0.0.0.0",
+            "static_dns2": "0.0.0.0"
+        },
+        "ftp":
+        {
+            "enable": false,
+            "username": "",
+            "password": "",
+            "port": 21
+        },
+        "sntp":
+        {
+            "enable": false,
+            "port": 123,
+            "server": "pool.ntp.org"
+        },
+        "mount":
+        {
+            "enable_f": true,
+            "enable_g": true
+        },
+        "logging":
+        {
+            "overlay_log_level": "info",
+            "enable_overlay": true,
+            "overlay_duration_frames": 30,
+            "overlay_bg_alpha_int": 100
+        },
+        "homescreen":
+        {
+            "show_fps": false,
+            "show_ip": true
+        }
+    },
+    "menu":
+    [
+        {
+            "label": "Games",
+            "type": "scan",
+            "path": "F:\\Games\\,G:\\Games"
+        },
+        {
+            "label": "Applications",
+            "type": "scan",
+            "path": "F:\\Apps,G:\\Apps"
+        },
+        {
+            "label": "Launch DVD",
+            "type": "launch",
+            "path": "D:\\default.xbe"
+        },
+        {
+            "label": "Settings",
+            "type": "settings"
+        },
+        {
+            "label": "Reboot",
+            "type": "reboot"
+        },
+        {
+            "label": "Power off",
+            "type": "shutdown"
+        },
+        {
+            "label": "Some stupid submenu",
+            "type": "submenu"
+        }
+    ]
+}

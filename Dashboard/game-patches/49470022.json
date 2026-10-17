@@ -1,0 +1,174 @@
+{
+  "format": 1,
+  "title_id": "49470022",
+  "versions": [
+    {
+      "label": "Enter the Matrix \u2014 omit asset-build logs (hardware test pending)",
+      "default_xbe_sha256": "a85750fbc28f20f628daf10e68bfb2be90749fa8f10137226bdaca5f90668d9a",
+      "renames": [],
+      "files": [],
+      "exclude_build_logs": [
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_AP_03_G_NORTH_POINT_CONCOURSE.txt",
+          "sha256": "adb6967a0a60fad32ad2608afd7c24c6e660f67a5041c8bf69532849f7fe9a61"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_AP_03_N_UNDERGROUND_TUNNELS.txt",
+          "sha256": "305900dd68c95bda3d1c4dc3c09bc076949593ae58db3f9edd46afb4e9b1f51d"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_AP_05_G_REVOLVING_RESTAURANT.txt",
+          "sha256": "0f40f489b32f3d83cb13a41d2d0b9fae56fd3d3a249a6e29d1cbc3ece12a3872"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_SW_01_G_UPPER_MAIN_JUNCTION.txt",
+          "sha256": "22150c5b640d2571249e8a7e420c80d2835805bd47f81b117f8fd0d1ef3ea432"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_SW_01_N_UPPER_MAIN_JUNCTION.txt",
+          "sha256": "22150c5b640d2571249e8a7e420c80d2835805bd47f81b117f8fd0d1ef3ea432"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_SW_05_G_DEEP_WATER_JUNCTION.txt",
+          "sha256": "c7ad01769d043c053a53792c354a93eeea27901c8b41bc9dd88cb0d1f7d8af7b"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_SW_05_G_DEEP_WATER_JUNCTION2.txt",
+          "sha256": "5b8e3161030515c1b0b4e45f578104adcd1d2040b0a29e020a6765c35ba8ddab"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_SW_05_N_DEEP_WATER_JUNCTION.txt",
+          "sha256": "a24ac1e8ac40c506400e465a2eae895e3ff3772e2ec01fac9286bf823e269f2c"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/particle_B2_SW_05_N_DEEP_WATER_JUNCTION2.txt",
+          "sha256": "23f420aae6c78258bea8d61ec23ecfd994f0e92acaf56acf8d2f5296015ba962"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_AP_03_G_NORTH_POINT_CONCOURSE.txt",
+          "sha256": "723e0428c25d8bf7d12696d2797bf5de3b8bc1611bf6296e65b2fa751d98656e"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_AP_03_N_UNDERGROUND_TUNNELS.txt",
+          "sha256": "17817002340cada8b5c026b1e236d9d4fcc9e708a790e2de68ec65a750e0768d"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_AP_05_G_REVOLVING_RESTAURANT.txt",
+          "sha256": "aca8616b062af773d44c5d370ec5229fc808714f4d3c3a7414a2a547bed2e8ac"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_SW_01_G_UPPER_MAIN_JUNCTION.txt",
+          "sha256": "cc377194d8e18f845bd062d03c2c1f254ac0918dbb3c4ce4023d86d4f95d3a79"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_SW_01_N_UPPER_MAIN_JUNCTION.txt",
+          "sha256": "cc377194d8e18f845bd062d03c2c1f254ac0918dbb3c4ce4023d86d4f95d3a79"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_SW_05_G_DEEP_WATER_JUNCTION.txt",
+          "sha256": "052a23d3434f9efb4cb846da74472ef1ae6473d7befc8e67a858d516bc515382"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_SW_05_G_DEEP_WATER_JUNCTION2.txt",
+          "sha256": "774f9956b464aadac71bcc3c4126b184e5ca9eb45249d073d7035b1ca722c63c"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_SW_05_N_DEEP_WATER_JUNCTION.txt",
+          "sha256": "5b144be0eec8a5698e4ffa15077ef0e78ae75107275d2be2b1f831cc299fc8d5"
+        },
+        {
+          "path": "Effects/Beat_2_Airport/ptexture_B2_SW_05_N_DEEP_WATER_JUNCTION2.txt",
+          "sha256": "acfafea27a448d9433366eb6e678a3f6c4423db01fe202b1c8c603cf9f740fc9"
+        },
+        {
+          "path": "Effects/Beat_3_Chateau/particle_B3_MC_01_G_GROUND_FLOOR_CENTRAL.txt",
+          "sha256": "5fcdc9099206baefa146b86f9d8e9afd2e4ba87ecc0e91ae93e327ee64210b41"
+        },
+        {
+          "path": "Effects/Beat_3_Chateau/particle_B3_MC_01_N_GROUND_FLOOR_CENTRAL.txt",
+          "sha256": "c7dcab5627710920f4b925dd44ab11c778092c4b570a1d753ee8d0c9be6d547f"
+        },
+        {
+          "path": "Effects/Beat_3_Chateau/particle_B3_MC_04_G_SECRET_PASSAGE_GHOST.txt",
+          "sha256": "91264e0807bf7a4d8ad7d59cf1bffd4fb5e8dc2cae408b2374d0aff24dfcb01b"
+        },
+        {
+          "path": "Effects/Beat_3_Chateau/ptexture_B3_MC_01_G_GROUND_FLOOR_CENTRAL.txt",
+          "sha256": "445d710dd94f5d274cdb90ad59f5d2170612f000d3a132a2bdf9c7d9435a27b9"
+        },
+        {
+          "path": "Effects/Beat_3_Chateau/ptexture_B3_MC_01_N_GROUND_FLOOR_CENTRAL.txt",
+          "sha256": "7242a4bbd2347b9d44d657ff6d5ef9c6a7eb8d1ed9cdbded29a78aa7ad31be0c"
+        },
+        {
+          "path": "Effects/Beat_3_Chateau/ptexture_B3_MC_04_G_SECRET_PASSAGE_GHOST.txt",
+          "sha256": "6ff9e5c7d1b6279515f36875bd646d84366878a1a83eb02a533bc65858a26baf"
+        },
+        {
+          "path": "Effects/Beat_5_Powerplant/particle_B5_PP_05_G_EXT_CHLOROBROMO_AREA.txt",
+          "sha256": "266c26e82f6797cf4c69298473646596db3a58b537bf255abff16282aeffbc4e"
+        },
+        {
+          "path": "Effects/Beat_5_Powerplant/particle_B5_PP_05_N_EXT_CHLOROBROMO_AREA.txt",
+          "sha256": "266c26e82f6797cf4c69298473646596db3a58b537bf255abff16282aeffbc4e"
+        },
+        {
+          "path": "Effects/Beat_5_Powerplant/ptexture_B5_PP_05_G_EXT_CHLOROBROMO_AREA.txt",
+          "sha256": "59cbbd942689b35868137b74e091ca06a9871c0a057b94fd292a67a54658a242"
+        },
+        {
+          "path": "Effects/Beat_5_Powerplant/ptexture_B5_PP_05_N_EXT_CHLOROBROMO_AREA.txt",
+          "sha256": "59cbbd942689b35868137b74e091ca06a9871c0a057b94fd292a67a54658a242"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/particle_B7_HC_01_G_HOVERCRAFT_TUNNEL_A.txt",
+          "sha256": "455fe166d4ff68b917bd77e423c7ca2c4721e9c8be0e6d225123977a7eea1776"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/particle_B7_HC_01_G_HOVERCRAFT_TUNNEL_C.txt",
+          "sha256": "605fa728ace9977629dcc57cbf922aebc31ebbf1dc31291101d91e9d695718ae"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/particle_B7_HC_01_G_HOVERCRAFT_TUNNEL_F.txt",
+          "sha256": "fe09166de92206b77df1bdb6fcf5c5272c56c7d4943080103bff75df0c1d7174"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/particle_B7_HC_01_N_HOVERCRAFT_TUNNEL_A.txt",
+          "sha256": "4801cb22b51522bbb9ffb73ea935086e2349d5412cf4a69f62dcf81df1d61948"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/particle_B7_HC_01_N_HOVERCRAFT_TUNNEL_C.txt",
+          "sha256": "605fa728ace9977629dcc57cbf922aebc31ebbf1dc31291101d91e9d695718ae"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/particle_B7_HC_01_N_HOVERCRAFT_TUNNEL_F.txt",
+          "sha256": "fe09166de92206b77df1bdb6fcf5c5272c56c7d4943080103bff75df0c1d7174"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/ptexture_B7_HC_01_G_HOVERCRAFT_TUNNEL_A.txt",
+          "sha256": "23e9175f4a052d47fcb4c069cdcb84577ab07790549559020488f789104212be"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/ptexture_B7_HC_01_G_HOVERCRAFT_TUNNEL_C.txt",
+          "sha256": "e1d446cee9fcb80aa6c188b5fb788975ea86ccf2301c232ca835c301caa964ef"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/ptexture_B7_HC_01_G_HOVERCRAFT_TUNNEL_F.txt",
+          "sha256": "056b5ecb3b1133bfc4d244c256c26aa8e98447b885f16d59683a1f949e16faca"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/ptexture_B7_HC_01_N_HOVERCRAFT_TUNNEL_A.txt",
+          "sha256": "df518a132eea26861ba1da5b24ccb7f209f3ba64376cb6bf86e026ef59df3ecb"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/ptexture_B7_HC_01_N_HOVERCRAFT_TUNNEL_C.txt",
+          "sha256": "e1d446cee9fcb80aa6c188b5fb788975ea86ccf2301c232ca835c301caa964ef"
+        },
+        {
+          "path": "Effects/Beat_7_Hovercraft/ptexture_B7_HC_01_N_HOVERCRAFT_TUNNEL_F.txt",
+          "sha256": "056b5ecb3b1133bfc4d244c256c26aa8e98447b885f16d59683a1f949e16faca"
+        }
+      ]
+    }
+  ]
+}

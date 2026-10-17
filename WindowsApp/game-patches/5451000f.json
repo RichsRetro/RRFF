@@ -1,0 +1,115 @@
+{
+  "format": 1,
+  "title_id": "5451000f",
+  "versions": [
+    {
+      "label": "Alter Echo \u2014 HDD compatibility patch; reported working on Xbox",
+      "default_xbe_sha256": "daa063478ba35175476735a34cade227714a5c445d2e80e4867a02fe5a5182e9",
+      "renames": [
+        {
+          "from_prefix": "ODB Data/ODB MEDIA/xvg/Object_Gunshhip_Fly_by_24+.xvg",
+          "to_prefix": "ODB Data/ODB MEDIA/xvg/Object_Gunshhip_Fly_by_24p.xvg"
+        }
+      ],
+      "files": [
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L02_A2.clf",
+          "sha256": "462fdfe4ad3d8fb86b83d605f5a0027901e9c6e9092ee0516bd97f3a63ca5067",
+          "patches": [
+            {
+              "offset": 29504243,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "f401bf9b699e6b551658b0f2e62dfc242f2680119ac5801b9d3de513a3e698f2"
+        },
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L02_A3.clf",
+          "sha256": "59657349447ba154915d4988f2c67144cf62872e65668148e9ea15facec36be7",
+          "patches": [
+            {
+              "offset": 28006021,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "49507acdf64095f1101edcad22a6d3f4db7f6d7c85a16dba2b3a3aa43b68121d"
+        },
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L02_A4.clf",
+          "sha256": "76b173bac567f58b776f92f7da9afa5a634a36a7996619bd710eab6639631be5",
+          "patches": [
+            {
+              "offset": 24972987,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "dcd15dbde714424cfa74073ed34924d775a43e1fe91d1f053e6dbce0e9160e4d"
+        },
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L05_A3.clf",
+          "sha256": "503eb1da3fec6f55303fcbc8cfc37660c3d93c5b33c30083e7d7dd8b864cd46f",
+          "patches": [
+            {
+              "offset": 29677091,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "4e61039c3fec88b8e5967b832aa1469b73cff8e5ed14a136085b52150f358244"
+        },
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L07_A2a.clf",
+          "sha256": "e7149d489aea706a78295ff43200ae325c4dc6b1be4ff49fa8ea244c62356030",
+          "patches": [
+            {
+              "offset": 28278187,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "c5a052432fb1e27cc5cad7449aa002b226e6cad9ec0215606a00658336f9d28e"
+        },
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L07_A3.clf",
+          "sha256": "aeb8f4af47708a936c9db13016233ba055b4f59083856dd5a0031b626c468f57",
+          "patches": [
+            {
+              "offset": 28618470,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "6ef99721a320d475d8919763406be6cf2aad42e9233434f115c8e9df32abf726"
+        },
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L08_A1.clf",
+          "sha256": "280fe6871e163fc70e160866ff7baa76c19247d83abab3c19e08b2404591d62e",
+          "patches": [
+            {
+              "offset": 30947012,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "63bd5047b0a36d118648052f5e0554f19f352d91c6b52d14d62ce34f97bad9ef"
+        },
+        {
+          "path": "ODB Data/ODB MEDIA/clf/L09_A9.clf",
+          "sha256": "6a0956c45cd9466323054e8984c422f632db0f93fd1adb44342cdb72bf321da5",
+          "patches": [
+            {
+              "offset": 17231212,
+              "before": "4f626a6563745f47756e73686869705f466c795f62795f32342b2e787667",
+              "after": "4f626a6563745f47756e73686869705f466c795f62795f3234702e787667"
+            }
+          ],
+          "patched_sha256": "3551115a81e372724eba2b3a0b15d58d297c4ac658fe28dc9d17fc7c6651d835"
+        }
+      ],
+      "folder_name": "Alter Echo"
+    }
+  ]
+}

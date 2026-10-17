@@ -1,0 +1,46 @@
+{
+  "format": 1,
+  "title_id": "434d0011",
+  "versions": [
+    {
+      "label": "Race Driver 2 \u2014 HDD compatibility patch; reported working on Xbox",
+      "default_xbe_sha256": "5d6aa5a94c2959be22b5e2226d89cc9054086b0f11da7295331f47c8d9684bae",
+      "renames": [
+        {
+          "from_prefix": "shaders/PostProduction_ScalarDepthVelocityTransformShader.xvu",
+          "to_prefix": "shaders/PostProduction_ScalarDepthVelocityTran.xvu"
+        }
+      ],
+      "files": [
+        {
+          "path": "default.xbe",
+          "sha256": "5d6aa5a94c2959be22b5e2226d89cc9054086b0f11da7295331f47c8d9684bae",
+          "patches": [
+            {
+              "offset": 544,
+              "before": "02020000",
+              "after": "ff010040"
+            },
+            {
+              "offset": 2316,
+              "before": "4eca8157d4a4d88c8f29d29d4c6a3c93df10317f",
+              "after": "f29b49e95e9a06dad37a20369edddde690fb8d14"
+            },
+            {
+              "offset": 3173796,
+              "before": "506f737450726f64756374696f6e5f5363616c6172446570746856656c6f636974795472616e73666f726d5368616465722e78767500",
+              "after": "506f737450726f64756374696f6e5f5363616c6172446570746856656c6f636974795472616e2e787675000000000000000000000000"
+            },
+            {
+              "offset": 3173892,
+              "before": "643a",
+              "after": "002e"
+            }
+          ],
+          "patched_sha256": "51e20ecde3dd458b869d334eda6fd5687733f663a36ceedf71f031cb907042de"
+        }
+      ],
+      "patched_xbe_sha256": "51e20ecde3dd458b869d334eda6fd5687733f663a36ceedf71f031cb907042de"
+    }
+  ]
+}

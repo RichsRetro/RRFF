@@ -1,0 +1,822 @@
+{
+  "format": 1,
+  "title_id": "4156004b",
+  "versions": [
+    {
+      "label": "Gun \u2014 HDD compatibility patch; reported working on Xbox",
+      "folder_name": "Gun",
+      "default_xbe_sha256": "6bcd1de7189646741240852f424cd758000c59a673392700107f045159e0dc32",
+      "patched_xbe_sha256": "4fdd4b3bced11def5732e969304b7ffdf198a32bdd0b3c18fb5e4ea174cab3a6",
+      "renames": [
+        {
+          "from_prefix": "data/images/HUD/hud_frame_gun_shotgunsinglebarrel_bg.img.xbx",
+          "to_prefix": "data/images/HUD/rrxd_222862c2490a988e.img.xbx"
+        }
+      ],
+      "files": [
+        {
+          "path": "default.xbe",
+          "sha256": "6bcd1de7189646741240852f424cd758000c59a673392700107f045159e0dc32",
+          "patched_sha256": "4fdd4b3bced11def5732e969304b7ffdf198a32bdd0b3c18fb5e4ea174cab3a6",
+          "patches": [
+            {
+              "offset": 264,
+              "before": "ec0c",
+              "after": "240d"
+            },
+            {
+              "offset": 268,
+              "before": "c082",
+              "after": "00a0"
+            },
+            {
+              "offset": 284,
+              "before": "17",
+              "after": "18"
+            },
+            {
+              "offset": 296,
+              "before": "fa",
+              "after": "ab"
+            },
+            {
+              "offset": 298,
+              "before": "e6",
+              "after": "bb"
+            },
+            {
+              "offset": 332,
+              "before": "08",
+              "after": "40"
+            },
+            {
+              "offset": 336,
+              "before": "27",
+              "after": "5f"
+            },
+            {
+              "offset": 340,
+              "before": "ec09",
+              "after": "240a"
+            },
+            {
+              "offset": 356,
+              "before": "3c",
+              "after": "74"
+            },
+            {
+              "offset": 360,
+              "before": "8c",
+              "after": "c4"
+            },
+            {
+              "offset": 364,
+              "before": "3c",
+              "after": "74"
+            },
+            {
+              "offset": 368,
+              "before": "38",
+              "after": "70"
+            },
+            {
+              "offset": 424,
+              "before": "00000000000000",
+              "after": "2e72727864696f"
+            },
+            {
+              "offset": 544,
+              "before": "02",
+              "after": "03"
+            },
+            {
+              "offset": 547,
+              "before": "00",
+              "after": "40"
+            },
+            {
+              "offset": 900,
+              "before": "a2",
+              "after": "da"
+            },
+            {
+              "offset": 908,
+              "before": "78",
+              "after": "b0"
+            },
+            {
+              "offset": 912,
+              "before": "7a",
+              "after": "b2"
+            },
+            {
+              "offset": 956,
+              "before": "a8",
+              "after": "e0"
+            },
+            {
+              "offset": 964,
+              "before": "7a",
+              "after": "b2"
+            },
+            {
+              "offset": 968,
+              "before": "7c",
+              "after": "b4"
+            },
+            {
+              "offset": 1012,
+              "before": "ac",
+              "after": "e4"
+            },
+            {
+              "offset": 1020,
+              "before": "7c",
+              "after": "b4"
+            },
+            {
+              "offset": 1024,
+              "before": "7c",
+              "after": "b4"
+            },
+            {
+              "offset": 1068,
+              "before": "b1",
+              "after": "e9"
+            },
+            {
+              "offset": 1076,
+              "before": "7c",
+              "after": "b4"
+            },
+            {
+              "offset": 1080,
+              "before": "7e",
+              "after": "b6"
+            },
+            {
+              "offset": 1124,
+              "before": "b7",
+              "after": "ef"
+            },
+            {
+              "offset": 1132,
+              "before": "7e",
+              "after": "b6"
+            },
+            {
+              "offset": 1136,
+              "before": "80",
+              "after": "b8"
+            },
+            {
+              "offset": 1180,
+              "before": "be",
+              "after": "f6"
+            },
+            {
+              "offset": 1188,
+              "before": "80",
+              "after": "b8"
+            },
+            {
+              "offset": 1192,
+              "before": "82",
+              "after": "ba"
+            },
+            {
+              "offset": 1236,
+              "before": "c5",
+              "after": "fd"
+            },
+            {
+              "offset": 1244,
+              "before": "82",
+              "after": "ba"
+            },
+            {
+              "offset": 1248,
+              "before": "84",
+              "after": "bc"
+            },
+            {
+              "offset": 1292,
+              "before": "ca08",
+              "after": "0209"
+            },
+            {
+              "offset": 1300,
+              "before": "84",
+              "after": "bc"
+            },
+            {
+              "offset": 1304,
+              "before": "86",
+              "after": "be"
+            },
+            {
+              "offset": 1348,
+              "before": "d208",
+              "after": "0a09"
+            },
+            {
+              "offset": 1356,
+              "before": "86",
+              "after": "be"
+            },
+            {
+              "offset": 1360,
+              "before": "86",
+              "after": "be"
+            },
+            {
+              "offset": 1404,
+              "before": "d908",
+              "after": "1109"
+            },
+            {
+              "offset": 1412,
+              "before": "86",
+              "after": "be"
+            },
+            {
+              "offset": 1416,
+              "before": "88",
+              "after": "c0"
+            },
+            {
+              "offset": 1460,
+              "before": "e008",
+              "after": "1809"
+            },
+            {
+              "offset": 1468,
+              "before": "88",
+              "after": "c0"
+            },
+            {
+              "offset": 1472,
+              "before": "8a",
+              "after": "c2"
+            },
+            {
+              "offset": 1516,
+              "before": "e508",
+              "after": "1d09"
+            },
+            {
+              "offset": 1524,
+              "before": "8a",
+              "after": "c2"
+            },
+            {
+              "offset": 1528,
+              "before": "8c",
+              "after": "c4"
+            },
+            {
+              "offset": 1572,
+              "before": "ed08",
+              "after": "2509"
+            },
+            {
+              "offset": 1580,
+              "before": "8c",
+              "after": "c4"
+            },
+            {
+              "offset": 1584,
+              "before": "8e",
+              "after": "c6"
+            },
+            {
+              "offset": 1608,
+              "before": "06",
+              "after": "07"
+            },
+            {
+              "offset": 1628,
+              "before": "f108",
+              "after": "2909"
+            },
+            {
+              "offset": 1636,
+              "before": "8e",
+              "after": "c6"
+            },
+            {
+              "offset": 1640,
+              "before": "90",
+              "after": "c8"
+            },
+            {
+              "offset": 1684,
+              "before": "f808",
+              "after": "3009"
+            },
+            {
+              "offset": 1692,
+              "before": "90",
+              "after": "c8"
+            },
+            {
+              "offset": 1696,
+              "before": "92",
+              "after": "ca"
+            },
+            {
+              "offset": 1740,
+              "before": "fe08",
+              "after": "3609"
+            },
+            {
+              "offset": 1748,
+              "before": "92",
+              "after": "ca"
+            },
+            {
+              "offset": 1752,
+              "before": "94",
+              "after": "cc"
+            },
+            {
+              "offset": 1796,
+              "before": "04",
+              "after": "3c"
+            },
+            {
+              "offset": 1804,
+              "before": "94",
+              "after": "cc"
+            },
+            {
+              "offset": 1808,
+              "before": "96",
+              "after": "ce"
+            },
+            {
+              "offset": 1852,
+              "before": "0d",
+              "after": "45"
+            },
+            {
+              "offset": 1860,
+              "before": "96",
+              "after": "ce"
+            },
+            {
+              "offset": 1864,
+              "before": "98",
+              "after": "d0"
+            },
+            {
+              "offset": 1908,
+              "before": "15",
+              "after": "4d"
+            },
+            {
+              "offset": 1916,
+              "before": "98",
+              "after": "d0"
+            },
+            {
+              "offset": 1920,
+              "before": "9a",
+              "after": "d2"
+            },
+            {
+              "offset": 1964,
+              "before": "1c",
+              "after": "54"
+            },
+            {
+              "offset": 1972,
+              "before": "9a",
+              "after": "d2"
+            },
+            {
+              "offset": 1976,
+              "before": "9a",
+              "after": "d2"
+            },
+            {
+              "offset": 2020,
+              "before": "23",
+              "after": "5b"
+            },
+            {
+              "offset": 2028,
+              "before": "9a",
+              "after": "d2"
+            },
+            {
+              "offset": 2032,
+              "before": "9c",
+              "after": "d4"
+            },
+            {
+              "offset": 2076,
+              "before": "2d",
+              "after": "65"
+            },
+            {
+              "offset": 2084,
+              "before": "9c",
+              "after": "d4"
+            },
+            {
+              "offset": 2088,
+              "before": "9e",
+              "after": "d6"
+            },
+            {
+              "offset": 2132,
+              "before": "35",
+              "after": "6d"
+            },
+            {
+              "offset": 2140,
+              "before": "9e",
+              "after": "d6"
+            },
+            {
+              "offset": 2144,
+              "before": "a0",
+              "after": "d8"
+            },
+            {
+              "offset": 2168,
+              "before": "00",
+              "after": "07"
+            },
+            {
+              "offset": 2173,
+              "before": "0000",
+              "after": "9047"
+            },
+            {
+              "offset": 2177,
+              "before": "00",
+              "after": "10"
+            },
+            {
+              "offset": 2181,
+              "before": "0000",
+              "after": "3031"
+            },
+            {
+              "offset": 2184,
+              "before": "0000",
+              "after": "4d02"
+            },
+            {
+              "offset": 2188,
+              "before": "000000",
+              "after": "a80101"
+            },
+            {
+              "offset": 2196,
+              "before": "000000",
+              "after": "b00101"
+            },
+            {
+              "offset": 2200,
+              "before": "000000",
+              "after": "b40101"
+            },
+            {
+              "offset": 2204,
+              "before": "0000000000002e74657874004433440044334458",
+              "after": "7adbd0cd2daf713a7d59d429aa455faa626b805e"
+            },
+            {
+              "offset": 2225,
+              "before": "5847525048",
+              "after": "0000000000"
+            },
+            {
+              "offset": 2231,
+              "before": "44534f554e44",
+              "after": "000000000000"
+            },
+            {
+              "offset": 2238,
+              "before": "574d41444543",
+              "after": "000000000000"
+            },
+            {
+              "offset": 2245,
+              "before": "42494e4b",
+              "after": "00000000"
+            },
+            {
+              "offset": 2250,
+              "before": "42494e4b593136",
+              "after": "00000000000000"
+            },
+            {
+              "offset": 2258,
+              "before": "42494e4b3136",
+              "after": "000000000000"
+            },
+            {
+              "offset": 2265,
+              "before": "42494e4b3332",
+              "after": "002e74657874"
+            },
+            {
+              "offset": 2272,
+              "before": "584e455400584f4e4c494e4500585050002e7264617461002e6461746100444f4c42590042494e4b444154410042494e4b",
+              "after": "44334400443344580058475250480044534f554e4400574d414445430042494e4b0042494e4b5931360042494e4b313600"
+            },
+            {
+              "offset": 2322,
+              "before": "535300584f4e5f5244002e6461746131002424",
+              "after": "494e4b333200584e455400584f4e4c494e4500"
+            },
+            {
+              "offset": 2342,
+              "before": "54494d41474500786278666f6e",
+              "after": "5050002e7264617461002e6461"
+            },
+            {
+              "offset": 2356,
+              "before": "002e5854",
+              "after": "6100444f"
+            },
+            {
+              "offset": 2361,
+              "before": "4944",
+              "after": "4259"
+            },
+            {
+              "offset": 2364,
+              "before": "584150494c49420001000000d916014044334438000000",
+              "after": "42494e4b444154410042494e4b42535300584f4e5f5244"
+            },
+            {
+              "offset": 2388,
+              "before": "01000000d9160f40443344583800000001000000d916014058475241504843",
+              "after": "2e64617461310024245854494d41474500786278666f6e74002e58544c4944"
+            },
+            {
+              "offset": 2420,
+              "before": "01000000d916094044534f554e44000001000000d9160b4058424f584b524e4c01000000d91601404c4942430000000001000000d9160140584f4e4c494e455301000000d916112058564f494345000001000000d9160440564f49434d41494c01000000d9160448564f49434d41494c01000000d916044847",
+              "after": "584150494c49420001000000d9160140443344380000000001000000d9160f40443344583800000001000000d9160140584752415048430001000000d916094044534f554e44000001000000d9160b4058424f584b524e4c01000000d91601404c4942430000000001000000d9160140584f4e4c494e455301"
+            },
+            {
+              "offset": 2542,
+              "before": "75",
+              "after": "00"
+            },
+            {
+              "offset": 2544,
+              "before": "6e005f00460069006e0061",
+              "after": "d916112058564f49434500"
+            },
+            {
+              "offset": 2556,
+              "before": "6c",
+              "after": "01"
+            },
+            {
+              "offset": 2558,
+              "before": "2e",
+              "after": "00"
+            },
+            {
+              "offset": 2560,
+              "before": "6500780065000000633a5c67756e5f6e67637862785c4275696c645c58426f785c66696e616c5c47756e",
+              "after": "d9160440564f49434d41494c01000000d9160448564f49434d41494c01000000d9160448470075006e00"
+            },
+            {
+              "offset": 2603,
+              "before": "46696e616c2e65786500",
+              "after": "00460069006e0061006c"
+            },
+            {
+              "offset": 2614,
+              "before": "00",
+              "after": "2e"
+            },
+            {
+              "offset": 2616,
+              "before": "0733ad030753ad03a903ea000373a7033200b3fd030503fdd343f9ea0003e3f93347332200ff030573fd7373a773ea0073f7d373e3f7430f03ff0305ff332e00037a00035200f93303f9030f33ff",
+              "after": "6500780065000000633a5c67756e5f6e67637862785c4275696c645c58426f785c66696e616c5c47756e5f46696e616c2e657865000000000733ad030753ad03a903ea000373a7033200b3fd0305"
+            },
+            {
+              "offset": 2695,
+              "before": "0343ff13f913050393a3f7730773a7632353a30513a3d3f773030713",
+              "after": "fdd343f9ea0003e3f93347332200ff030573fd7373a773ea0073f7d3"
+            },
+            {
+              "offset": 2726,
+              "before": "e3a31309",
+              "after": "430f03ff"
+            },
+            {
+              "offset": 2731,
+              "before": "a3f7e39313054353f95373",
+              "after": "05ff332e00037a00035200"
+            },
+            {
+              "offset": 2743,
+              "before": "b333032363030593ff",
+              "after": "3303f9030f33ff0303"
+            },
+            {
+              "offset": 2753,
+              "before": "03e3ff33f9",
+              "after": "ff13f91305"
+            },
+            {
+              "offset": 2759,
+              "before": "0343e3fdb305f9d3f5d303a3ffe30303",
+              "after": "93a3f7730773a7632353a30513a3d3f7"
+            },
+            {
+              "offset": 2776,
+              "before": "26f0",
+              "after": "0307"
+            },
+            {
+              "offset": 2779,
+              "before": "0523e3ff630336f0132333c363",
+              "after": "73e3f7e3a3130903a3f7e39313"
+            },
+            {
+              "offset": 2793,
+              "before": "d3ff45ffa393f7e3",
+              "after": "4353f95373f9b333"
+            },
+            {
+              "offset": 2802,
+              "before": "6326f04303",
+              "after": "2363030593"
+            },
+            {
+              "offset": 2808,
+              "before": "73d3f9b3f97313f95313e3f7930323f9e3d3f9d336f0",
+              "after": "4303e3ff33f9030343e3fdb305f9d3f5d303a3ffe303"
+            },
+            {
+              "offset": 2831,
+              "before": "23638363030322f043e3ff43d3f79323f9a30323f7b33332f013",
+              "after": "7326f0130523e3ff630336f0132333c36305d3ff45ffa393f7e3"
+            },
+            {
+              "offset": 2858,
+              "before": "53f7e3",
+              "after": "6326f0"
+            },
+            {
+              "offset": 2862,
+              "before": "f7e305a3f7a303e3f7d305d3f7c303d3f75303f913071333",
+              "after": "03ff73d3f9b3f97313f95313e3f7930323f9e3d3f9d336f0"
+            },
+            {
+              "offset": 2887,
+              "before": "0313f9d3f7a3f7d3f913f9",
+              "after": "23638363030322f043e3ff"
+            },
+            {
+              "offset": 2900,
+              "before": "f9030303f993f9e32323f97305",
+              "after": "f79323f9a30323f7b33332f013"
+            },
+            {
+              "offset": 2914,
+              "before": "f963f9d34313030773f92305a3f903f92303f9030f",
+              "after": "53f7e343f7e305a3f7a303e3f7d305d3f7c303d3f7"
+            },
+            {
+              "offset": 2936,
+              "before": "f973fde3b3f913f923",
+              "after": "03f913071333030313"
+            },
+            {
+              "offset": 2946,
+              "before": "730fd3",
+              "after": "d3f7a3"
+            },
+            {
+              "offset": 2950,
+              "before": "e3030393f9030533f913e3ffd30303e3f7d307a3",
+              "after": "d3f913f943d3f9030303f993f9e32323f9730503"
+            },
+            {
+              "offset": 2971,
+              "before": "13",
+              "after": "63"
+            },
+            {
+              "offset": 2973,
+              "before": "03",
+              "after": "d3"
+            },
+            {
+              "offset": 2975,
+              "before": "f7d32200a3f923fd43e3f7d343",
+              "after": "13030773f92305a3f903f92303"
+            },
+            {
+              "offset": 2989,
+              "before": "43f9030d03f95305",
+              "after": "030f53f973fde3b3"
+            },
+            {
+              "offset": 2998,
+              "before": "e30743",
+              "after": "13f923"
+            },
+            {
+              "offset": 3002,
+              "before": "0303b3ff",
+              "after": "730fd3f7"
+            },
+            {
+              "offset": 3008,
+              "before": "f9a307d3f953f7e30393f7932200fb03fbe303f973a3f7d343f90305030723f90305f9a307d3f39323090333d3fb23f9",
+              "after": "0393f9030533f913e3ffd30303e3f7d307a3f913f90343f7d32200a3f923fd43e3f7d343f943f9030d03f95305f9e307"
+            },
+            {
+              "offset": 3057,
+              "before": "0513f973b3f79303e3f7330f03f9d3",
+              "after": "f90303b3ffe303f9a307d3f953f7e3"
+            },
+            {
+              "offset": 3073,
+              "before": "fb4323f933e3f79343f90513f963f907",
+              "after": "93f7932200fb03fbe303f973a3f7d343"
+            },
+            {
+              "offset": 3090,
+              "before": "b3",
+              "after": "03"
+            },
+            {
+              "offset": 3092,
+              "before": "4322f0430573",
+              "after": "030723f90305"
+            },
+            {
+              "offset": 3099,
+              "before": "23f97305a3f913f94303f9030f33f97303f9e30353f913f94313f97343e3f773b3f7b30793f96323e3f7d3f9a30303a3f903d3f7e323",
+              "after": "a307d3f39323090333d3fb23f9430513f973b3f79303e3f7330f03f9d303fb4323f933e3f79343f90513f963f907f9b3054322f04305"
+            },
+            {
+              "offset": 3155,
+              "before": "6303f90313",
+              "after": "23f97305a3"
+            },
+            {
+              "offset": 3161,
+              "before": "b3a30d73",
+              "after": "13f94303"
+            },
+            {
+              "offset": 3166,
+              "before": "2303f94303b3",
+              "after": "030f33f97303"
+            },
+            {
+              "offset": 3173,
+              "before": "23f90303d322f0b303f973071326f0e303d32af073032326f0a30343f90343fb930dd3f90303f7e305f9a353f90503e3fdb3",
+              "after": "e30353f913f94313f97343e3f773b3f7b30793f96323e3f7d3f9a30303a3f903d3f7e32373f96303f90313f9b3a30d73f923"
+            },
+            {
+              "offset": 3224,
+              "before": "03f9330923ff73",
+              "after": "f94303b3f923f9"
+            },
+            {
+              "offset": 3233,
+              "before": "03e322f0630763fde34305a3f7b305d3f9330d4b0547130303491373a793070343a3c3a37313051349030b0353d3f3e37313",
+              "after": "d322f0b303f973071326f0e303d32af073032326f0a30343f90343fb930dd3f90303f7e305f9a353f90503e3fdb30303f933"
+            },
+            {
+              "offset": 3284,
+              "before": "0343",
+              "after": "23ff"
+            },
+            {
+              "offset": 3287,
+              "before": "a3d3f3",
+              "after": "030303"
+            },
+            {
+              "offset": 3291,
+              "before": "73130b03235347030749130749030d0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+              "after": "22f0630763fde34305a3f7b305d3f9330d4b0547130303491373a793070343a3c3a37313051349030b0353d3f3e3731309034373a3d3f3e373130b03235347030749130749030d"
+            },
+            {
+              "offset": 3223552,
+              "before": "",
+              "after": "9c60a1d4992a00a3e8914700c705d4992a0045904700a1d8992a00a3ec914700c705d8992a008a904700a1b49a2a00a3f0914700c705b49a2a00c6904700619de90c00d3ff5589e581ec600200005356578b45108d95a0fdffffe8970000008945fcff7528ff7524ff7520ff751cff7518ff7514ff75fcff750cff7508ff15e89147005f5e5bc9c224005589e581ec600200005356578b45108d95a0fdffffe8520000008945fcff751cff7518ff7514ff75fcff750cff7508ff15ec9147005f5e5bc9c218005589e581ec600200005356578b45088d95a0fdffffe8160000008945fcff750cff75fcff15f09147005f5e5bc9c208009cfc5356575589d589451885c00f84d40000008b700485f60f84c90000000fb70e85c90f84be00000081f9ff0100000f87b2000000894d148b760485f60f84a400000089751cbff49147008b0f85c90f84920000003b4d14777f8b5d1429cb8b751c85db740c8a441eff3c5c74043c2f756701de5783c7088a060c208a2780cc2038e0755346474975ee5f897d20895d248b751c8d7d3089d9f3a48b5d208d730803338b4b04f3a4c607008b43040345246689450c406689450e8d45308945108b5d188b038945008b43088945088d450c89450489e8eb125f8b070347048d7c0708e964ffffff8b45185d5f5e5b9dc390900000000000000000000000002c0000001d0000006875645f6672616d655f67756e5f73686f7467756e73696e676c6562617272656c5f62672e696d672e786278727278645f323232383632633234393061393838652e696d672e7862780000000000000000"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

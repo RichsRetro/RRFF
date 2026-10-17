@@ -1,0 +1,14 @@
+{
+  "format": 1,
+  "title_id": "4156005e",
+  "versions": [
+    {
+      "default_xbe_sha256": "fd3aabe3b81ca71cfead5023fc087e9ba0d58a77dc856d3de762f2700af919a5",
+      "label": "Tony Hawks Project 8 \u2014 convert folder to XISO and install a launcher",
+      "folder_name": "Tony Hawks Project 8",
+      "install_as_xiso": true,
+      "renames": [],
+      "files": []
+    }
+  ]
+}

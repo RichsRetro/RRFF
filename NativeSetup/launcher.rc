@@ -1,0 +1,9 @@
+1 ICON "RRFF.ico"
+1 24 "launcher.manifest"
+1 VERSIONINFO
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
+ BEGIN
+ BLOCK "StringFileInfo" BEGIN BLOCK "040904B0" BEGIN VALUE "CompanyName", "RichsRetro\0" VALUE "FileDescription", "Rich's Retro FATX Formatter\0" VALUE "ProductName", "RRFF\0" VALUE "ProductVersion", "1.1.0\0" END END
+ BLOCK "VarFileInfo" BEGIN VALUE "Translation", 0x409,1200 END
+ END

@@ -1,0 +1,71 @@
+{
+  "settings": {
+    "network": {
+      "enable": true,
+      "use_dhcp": true,
+      "static_ip": "0.0.0.0",
+      "static_gateway": "0.0.0.0",
+      "static_netmask": "255.255.255.0",
+      "static_dns1": "0.0.0.0",
+      "static_dns2": "0.0.0.0"
+    },
+    "ftp": {
+      "enable": true,
+      "username": "xbox",
+      "password": "xbox",
+      "port": 21
+    },
+    "sntp": {
+      "enable": true,
+      "port": 123,
+      "server": "pool.ntp.org"
+    },
+    "mount": {
+      "enable_f": true,
+      "enable_g": true
+    },
+    "logging": {
+      "overlay_log_level": "error",
+      "enable_overlay": true,
+      "overlay_duration_frames": 30,
+      "overlay_bg_alpha_int": 100
+    },
+    "homescreen": {
+      "show_fps": false,
+      "show_ip": true
+    }
+  },
+  "menu": [
+    {
+      "label": "Applications",
+      "type": "appsfolder",
+      "path": "E:\\Apps,F:\\Apps"
+    },
+    {
+      "label": "Games",
+      "type": "scan",
+      "path": "F:\\Games,G:\\Games"
+    },
+    {
+      "label": "Launch DVD",
+      "type": "launch",
+      "path": "D:\\default.xbe"
+    },
+    {
+      "label": "Refresh Games & Apps",
+      "type": "refresh"
+    },
+    {
+      "label": "Settings",
+      "type": "settings"
+    },
+    {
+      "label": "Reboot",
+      "type": "reboot"
+    },
+    {
+      "label": "Power off",
+      "type": "shutdown"
+    }
+  ]
+}

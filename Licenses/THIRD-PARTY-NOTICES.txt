@@ -1,0 +1,6 @@
+RRFF includes Rich's Retro XDASH, based on NevolutionX (MIT, Lucas Eriksson). See third-party/NevolutionX.
+Fonts Share Bold and Lato retain their SIL Open Font License notices under third-party/fonts.
+NXDK, SDL, SDL_FontCache, NaturalSort, nlohmann/json and their bundled dependencies retain their upstream notices under third-party.
+The separate ISO Kernel Patcher executable is GPL version 2, copyright rmenhal with xman954 modifications. Its source, configuration/build information and full GPL text are included in kernel-patcher-source. Original RRFF/RRXD restrictions do not override these third-party terms.
+The native launcher/installer includes statically linked MinGW/GCC runtime code. Runtime exceptions and notices are under native-runtime.
+No commercial games, BIOS images, EEPROMs, user saves, private logs or third-party Xbox utility applications are included.

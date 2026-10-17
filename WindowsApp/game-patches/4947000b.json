@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "title_id": "4947000b",
+  "versions": [
+    {
+      "label": "Furious Karting \u2014 no filename patch needed; reported working on Xbox",
+      "folder_name": "Furious Karting",
+      "default_xbe_sha256": "706c0f594017184093735d0b66823b3aef4d85be175294f09c557956d53aaa89",
+      "renames": [],
+      "files": []
+    }
+  ]
+}
