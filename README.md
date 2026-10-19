@@ -177,3 +177,14 @@ If this saved you a headache, you can [buy me a coffee](https://buymeacoffee.com
 ## Source layout
 
 WindowsApp contains the managed formatter and embedded dashboard payloads. NativeSetup contains the native launcher and installer. Dashboard contains the matching dashboard source and assets. Full dashboard source including nxdk is supplied in **RRXD-Source.zip** on the release page; see BUILDING.txt and Dashboard/README.txt.
+
+
+## Languages and navigation (v1.1.1)
+
+English, Deutsch, Español, Français, Italiano and Português are available in RRFF and XDASH. RRFF defaults to the Windows display language. Change Language on the first selection screen; the choice is saved. The launcher, prerequisite checker and installer also translate their prompts without requiring .NET for the check. The complete compatibility document follows the app language.
+
+Explorer now has Back to return to the first selection screen. Back is disabled while an operation is running.
+
+XDASH has Settings → Dashboard language, independently of the console game-language setting. System default follows the console language; restart XDASH to refresh all cached text after changing the interface language. Unsupported languages fall back to English. File names, game names, paths and machine status identifiers stay unchanged. Windows-owned prompts and Microsoft’s own installer follow their system/provider language.
+
+See RELEASE-NOTES.md for update instructions, including preserving an existing Xbox configuration.

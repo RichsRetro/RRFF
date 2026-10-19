@@ -18,6 +18,7 @@ SRCS += \
 	$(SRCDIR)/ftpServer.cpp \
 	$(SRCDIR)/infoLog.cpp \
 	$(SRCDIR)/langMenu.cpp \
+	$(SRCDIR)/i18n.cpp \
 	$(SRCDIR)/logViewer.cpp \
 	$(SRCDIR)/logViewerMenu.cpp \
 	$(SRCDIR)/menu.cpp \

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using System.Collections.Generic;
 
@@ -50,25 +50,25 @@ internal sealed class Fatx {
 
         var elapsed=watch.Elapsed;
 
-        return "Total time: "+String.Format("{0:00}:{1:00}:{2:00}",(long)elapsed.TotalHours,elapsed.Minutes,elapsed.Seconds)+
+        return L.T("Total time: ")+String.Format("{0:00}:{1:00}:{2:00}",(long)elapsed.TotalHours,elapsed.Minutes,elapsed.Seconds)+
 
-            " | "+filesDone.ToString("N0")+" files | "+(volumes.Sum(v=>v.Nodes.Sum(n=>n.Size))/1000000000.0).ToString("0.00")+" GB copied";
+            " | "+filesDone.ToString("N0")+" files | "+(volumes.Sum(v=>v.Nodes.Sum(n=>n.Size))/1000000000.0).ToString("0.00")+L.T(" GB copied");
 
     }}
 
-    public string Summary {get{return plan.Summary+"\n"+String.Join("; ",volumes.Where(v=>v.Name=="F"||v.Name=="G").Select(v=>v.Name+": "+(v.Count*v.Spc*512/1000000000.0).ToString("0.00")+" GB usable, "+(v.Nodes.Sum(n=>(long)n.Clusters)/ (double)v.Count*100).ToString("0.0")+"% allocated"))+"\n"+fileTotal.ToString("N0")+" files, "+(volumes.Sum(v=>v.Nodes.Sum(n=>n.Size))/1073741824.0).ToString("0.00")+" GiB to install"+(gameFixes.Count==0?"":"\nAutomatic game fixes: "+String.Join("; ",gameFixes.Select(x=>x.Description)))+(skippedC.Count==0?"":"\n"+skippedC.Count+" conflicting custom C item(s) skipped; RRXD kept.");}}
+    public string Summary {get{return plan.Summary+"\n"+String.Join("; ",volumes.Where(v=>v.Name=="F"||v.Name=="G").Select(v=>v.Name+": "+(v.Count*v.Spc*512/1000000000.0).ToString("0.00")+" GB usable, "+(v.Nodes.Sum(n=>(long)n.Clusters)/ (double)v.Count*100).ToString("0.0")+"% allocated"))+"\n"+fileTotal.ToString("N0")+L.T(" files, ")+(volumes.Sum(v=>v.Nodes.Sum(n=>n.Size))/1073741824.0).ToString("0.00")+L.T(" GiB to install")+(gameFixes.Count==0?"":L.T("\nAutomatic game fixes: ")+String.Join("; ",gameFixes.Select(x=>x.Description)))+(skippedC.Count==0?"":"\n"+skippedC.Count+" conflicting custom C item(s) skipped; RRXD kept.");}}
 
     public Fatx(long size,InstallPlan options,Action<string,long,long> p,CancellationToken c,Func<GameCompatibility,bool> approval=null){
 
-        plan=options;progress=p;cancel=c;patchApproval=approval;if(size%512!=0)throw new IOException("Capacity is not a whole number of 512-byte sectors.");sectors=size/512;
+        plan=options;progress=p;cancel=c;patchApproval=approval;if(size%512!=0)throw new IOException(L.T("Capacity is not a whole number of 512-byte sectors."));sectors=size/512;
 
-        if(sectors<=FStart)throw new IOException("Drive is too small for the Xbox layout.");
+        if(sectors<=FStart)throw new IOException(L.T("Drive is too small for the Xbox layout."));
 
-        if(sectors>uint.MaxValue)throw new IOException("This layout supports drives below 2 TiB (including standard 2 TB drives), using 512-byte sectors.");
+        if(sectors>uint.MaxValue)throw new IOException(L.T("This layout supports drives below 2 TiB (including standard 2 TB drives), using 512-byte sectors."));
 
         bool split=NeedsG(size);
 
-        if(split&&!plan.SplitFG)throw new IOException("This drive needs F/G allocation. Choose automatic or manual placement before formatting.");
+        if(split&&!plan.SplitFG)throw new IOException(L.T("This drive needs F/G allocation. Choose automatic or manual placement before formatting."));
 
         for(int i=0;i<5;i++)volumes.Add(Prepare(Names[i],Starts[i],Sizes[i]));
 
@@ -100,7 +100,7 @@ internal sealed class Fatx {
 
         for(int i=0;i<parts.Length;i++){Valid(parts[i]);current=current.Length==0?parts[i]:current+"/"+parts[i];bool dir=i<parts.Length-1||directory;Node n;
 
-            if(nodes.TryGetValue(current,out n)){if(n.Dir!=dir||!dir)throw new IOException("Files conflict at "+v.Name+":\\"+current+". RRXD files cannot be replaced by custom files.");}
+            if(nodes.TryGetValue(current,out n)){if(n.Dir!=dir||!dir)throw new IOException(L.T("Files conflict at ")+v.Name+":\\"+current+L.T(". RRXD files cannot be replaced by custom files."));}
 
             else{n=new Node{Name=parts[i],Path=current,Dir=dir};nodes.Add(current,n);v.Nodes.Add(n);parent.Children.Add(n);}parent=n;
 
@@ -121,7 +121,7 @@ internal sealed class Fatx {
 
     Volume Prepare(string name,long start,long length,bool deferAllocation=false){
 
-        cancel.ThrowIfCancellationRequested();progress("Checking "+name+" files and space before erasing",0,0);
+        cancel.ThrowIfCancellationRequested();progress(L.T("Checking ")+name+L.T(" files and space before erasing"),0,0);
 
         var v=new Volume{Name=name,Start=start,Sectors=length,Root=new Node{Name="",Path="",Dir=true}};v.Nodes.Add(v.Root);var nodes=new Dictionary<string,Node>(StringComparer.OrdinalIgnoreCase);nodes.Add("",v.Root);
 
@@ -129,11 +129,11 @@ internal sealed class Fatx {
 
         if(bundled)using(var stream=Assembly.GetExecutingAssembly().GetManifestResourceStream((name=="G"?"F":name)+".zip")){
 
-            if(stream==null)throw new IOException("Missing bundled payload: "+name);
+            if(stream==null)throw new IOException(L.T("Missing bundled payload: ")+name);
 
             using(var zip=new ZipArchive(stream,ZipArchiveMode.Read))foreach(var e in zip.Entries){cancel.ThrowIfCancellationRequested();string path=e.FullName.Replace('\\','/').TrimEnd('/');if(path.Length==0)continue;bool dir=e.FullName.EndsWith("/")||e.FullName.EndsWith("\\");var n=Add(v,nodes,path,dir);
 
-                if(!dir)using(var input=e.Open())using(var memory=new MemoryStream()){input.CopyTo(memory);n.Data=memory.ToArray();n.Size=n.Data.LongLength;if(n.Size!=e.Length)throw new IOException("Truncated bundled file.");}
+                if(!dir)using(var input=e.Open())using(var memory=new MemoryStream()){input.CopyTo(memory);n.Data=memory.ToArray();n.Size=n.Data.LongLength;if(n.Size!=e.Length)throw new IOException(L.T("Truncated bundled file."));}
 
             }
 
@@ -141,7 +141,7 @@ internal sealed class Fatx {
 
         var bundledPaths=new HashSet<string>(nodes.Keys,StringComparer.OrdinalIgnoreCase);
 
-        if(folder!=null){var source=new DirectoryInfo(folder);if(!source.Exists)throw new IOException("Source folder missing: "+folder);var pending=new Stack<Tuple<DirectoryInfo,string>>();string rootPrefix=name=="F"?plan.FPrefix:name=="G"?plan.GPrefix:"";if(rootPrefix.Length>0)Add(v,nodes,rootPrefix,true);pending.Push(Tuple.Create(source,rootPrefix));int scanned=0;
+        if(folder!=null){var source=new DirectoryInfo(folder);if(!source.Exists)throw new IOException(L.T("Source folder missing: ")+folder);var pending=new Stack<Tuple<DirectoryInfo,string>>();string rootPrefix=name=="F"?plan.FPrefix:name=="G"?plan.GPrefix:"";if(rootPrefix.Length>0)Add(v,nodes,rootPrefix,true);pending.Push(Tuple.Create(source,rootPrefix));int scanned=0;
 
             while(pending.Count>0){var item=pending.Pop();
 
@@ -165,7 +165,7 @@ internal sealed class Fatx {
 
                 if(!Directory.Exists(f.FullName)&&XisoReader.Candidate(f.FullName)&&(name=="F"||name=="G")&&game==null&&!InsideLooseGame(item.Item1.FullName,folder)){AddImage(v,nodes,new XisoImport(f.FullName,patchApproval,cancel),item.Item2.Length==0?"Games":item.Item2);continue;}
 
-                cancel.ThrowIfCancellationRequested();if((f.Attributes&FileAttributes.ReparsePoint)!=0)throw new IOException("Links/junctions are not supported: "+f.FullName);bool dir=(f.Attributes&FileAttributes.Directory)!=0;if(!dir&&game!=null&&game.Skip(f.FullName))continue;
+                cancel.ThrowIfCancellationRequested();if((f.Attributes&FileAttributes.ReparsePoint)!=0)throw new IOException(L.T("Links/junctions are not supported: ")+f.FullName);bool dir=(f.Attributes&FileAttributes.Directory)!=0;if(!dir&&game!=null&&game.Skip(f.FullName))continue;
 
                 var childGame=(name=="F"||name=="G")&&dir?GameCompatibility.ForFolder(f.FullName,patchApproval,cancel):null;if(childGame!=null&&!gameFixes.Any(x=>x.Root.Equals(childGame.Root,StringComparison.OrdinalIgnoreCase)))gameFixes.Add(childGame);
 
@@ -179,13 +179,13 @@ internal sealed class Fatx {
 
                     if(!plan.SkipCConflicts)throw new CConflictException(path);
 
-                    skippedC.Add(path+(dir?"/ (folder and contents)":""));continue;
+                    skippedC.Add(path+(dir?L.T("/ (folder and contents)"):""));continue;
 
                 }
 
                 var n=Add(v,nodes,path,dir);
 
-                if(dir)pending.Push(Tuple.Create((DirectoryInfo)f,path));else{var file=(FileInfo)f;n.Source=file.FullName;n.Stamp=file.LastWriteTimeUtc;n.SourceSize=n.Size=file.Length;if(game!=null)n.Data=game.Replacement(f.FullName);if(n.Data!=null)n.Size=n.Data.LongLength;if(n.Size>uint.MaxValue)throw new IOException("FATX files must be smaller than 4 GiB: "+f.FullName);}if(++scanned%250==0)progress("Checking "+name+": "+scanned.ToString("N0")+" items",0,0);
+                if(dir)pending.Push(Tuple.Create((DirectoryInfo)f,path));else{var file=(FileInfo)f;n.Source=file.FullName;n.Stamp=file.LastWriteTimeUtc;n.SourceSize=n.Size=file.Length;if(game!=null)n.Data=game.Replacement(f.FullName);if(n.Data!=null)n.Size=n.Data.LongLength;if(n.Size>uint.MaxValue)throw new IOException(L.T("FATX files must be smaller than 4 GiB: ")+f.FullName);}if(++scanned%250==0)progress(L.T("Checking ")+name+": "+scanned.ToString("N0")+L.T(" items"),0,0);
 
             }}
 
@@ -202,7 +202,7 @@ internal sealed class Fatx {
 
         int next=1;foreach(var n in v.Nodes.Where(n=>n.Dir).Concat(v.Nodes.Where(n=>!n.Dir))){long bytes=n.Dir?(n.Children.Count+1L)*64:n.Size;n.Clusters=checked((int)((bytes+v.Spc*512-1)/(v.Spc*512)));n.First=n.Clusters==0?0:next;next=checked(next+n.Clusters);}
 
-        if(next-1>v.Count)throw new IOException(v.Name+" files need "+((next-1L)*v.Spc*512/1073741824.0).ToString("0.00")+" GiB, but only "+(v.Count*v.Spc*512/1073741824.0).ToString("0.00")+" GiB is available.");
+        if(next-1>v.Count)throw new IOException(v.Name+L.T(" files need ")+((next-1L)*v.Spc*512/1073741824.0).ToString("0.00")+L.T(" GiB, but only ")+(v.Count*v.Spc*512/1073741824.0).ToString("0.00")+L.T(" GiB is available."));
 
     }
 
@@ -260,7 +260,7 @@ internal sealed class Fatx {
 
             Exception failure=null;var worker=Task.Factory.StartNew(()=>{try{foreach(var block in queue.GetConsumingEnumerable(linked.Token)){disk.Write(block.Sector,block.Bytes,linked.Token,block.Verify);done+=block.Bytes.Length;filesDone=block.Files;Update(block.Message);}}catch(Exception e){failure=e;linked.Cancel();}},CancellationToken.None,TaskCreationOptions.LongRunning,TaskScheduler.Default);
 
-            byte[] buffer=new byte[Batch];int used=0;long nextSector=v.Start+v.DataStart,completed=filesDone;string label="Installing "+v.Name;bool verifyBlock=true;bool copyingFiles=false;
+            byte[] buffer=new byte[Batch];int used=0;long nextSector=v.Start+v.DataStart,completed=filesDone;string label=L.T("Installing ")+v.Name;bool verifyBlock=true;bool copyingFiles=false;
 
             Action flush=()=>{if(used==0)return;byte[] data=buffer;if(used!=Batch){data=new byte[used];Array.Copy(buffer,data,used);}queue.Add(new Block{Sector=nextSector,Bytes=data,Message=label,Files=completed,Verify=verifyBlock},linked.Token);nextSector+=used/512;buffer=new byte[Batch];used=0;};
 
@@ -270,7 +270,7 @@ internal sealed class Fatx {
 
             try{
 
-                foreach(var n in v.Nodes.Where(n=>n.Dir).Concat(v.Nodes.Where(n=>!n.Dir))){linked.Token.ThrowIfCancellationRequested();label="Installing "+v.Name+":\\"+n.Path;
+                foreach(var n in v.Nodes.Where(n=>n.Dir).Concat(v.Nodes.Where(n=>!n.Dir))){linked.Token.ThrowIfCancellationRequested();label=L.T("Installing ")+v.Name+":\\"+n.Path;
 
                     if(n.Dir){var data=Enumerable.Repeat((byte)255,n.Clusters*v.Spc*512).ToArray();int pos=0;foreach(var child in n.Children){Array.Clear(data,pos,64);var encodedName=FatxNames.Encode(child.Name);data[pos]=(byte)encodedName.Length;data[pos+1]=(byte)(child.Dir?16:0);Array.Copy(encodedName,0,data,pos+2,encodedName.Length);Put(data,pos+44,(uint)child.First);Put(data,pos+48,child.Dir?0:(uint)child.Size);pos+=64;}append(data,0,data.Length);}
 
@@ -278,11 +278,11 @@ internal sealed class Fatx {
 
                         if(!copyingFiles){flush();copyingFiles=true;verifyBlock=plan.FullVerify||(v.Name!="F"&&v.Name!="G");}
 
-                        if(n.Source!=null){var current=new FileInfo(n.Source);if((current.Attributes&FileAttributes.ReparsePoint)!=0||current.Length!=n.SourceSize||current.LastWriteTimeUtc!=n.Stamp)throw new IOException("Source changed: "+n.Path);}
+                        if(n.Source!=null){var current=new FileInfo(n.Source);if((current.Attributes&FileAttributes.ReparsePoint)!=0||current.Length!=n.SourceSize||current.LastWriteTimeUtc!=n.Stamp)throw new IOException(L.T("Source changed: ")+n.Path);}
 
                         using(var input=n.OpenSource!=null?n.OpenSource():n.Image!=null?n.Image.Open():n.Data!=null?(Stream)new MemoryStream(n.Data,false):new FileStream(n.Source,FileMode.Open,FileAccess.Read,FileShare.Read,4096,FileOptions.SequentialScan)){
 
-                            if(input.Length!=n.Size || (n.Source!=null && File.GetLastWriteTimeUtc(n.Source)!=n.Stamp))throw new IOException("Source changed: "+n.Path);var read=readBuffer;long remaining=n.Size;while(remaining>0){int want=(int)Math.Min(Batch,remaining),got=0;while(got<want){int r=input.Read(read,got,want-got);if(r==0)throw new IOException("Short source read: "+n.Path);got+=r;}append(read,0,got);remaining-=got;}}
+                            if(input.Length!=n.Size || (n.Source!=null && File.GetLastWriteTimeUtc(n.Source)!=n.Stamp))throw new IOException(L.T("Source changed: ")+n.Path);var read=readBuffer;long remaining=n.Size;while(remaining>0){int want=(int)Math.Min(Batch,remaining),got=0;while(got<want){int r=input.Read(read,got,want-got);if(r==0)throw new IOException(L.T("Short source read: ")+n.Path);got+=r;}append(read,0,got);remaining-=got;}}
 
                         int padding=(int)((long)n.Clusters*v.Spc*512-n.Size);if(padding>0)append(new byte[padding],0,padding);completed++;
 
@@ -292,7 +292,7 @@ internal sealed class Fatx {
 
             }finally{queue.CompleteAdding();worker.GetAwaiter().GetResult();if(failure!=null)throw failure;}
 
-            filesDone=completed;Update("Finished "+v.Name);
+            filesDone=completed;Update(L.T("Finished ")+v.Name);
 
         }
 
@@ -302,9 +302,9 @@ internal sealed class Fatx {
 
         Storage.ProtectSources(target,plan);watch.Start();using(var disk=new RawDisk(target)){
 
-            Write(disk,0,new byte[512],"Removing old PC partition metadata");Write(disk,1,new byte[33*512],"Removing primary PC partition metadata");Write(disk,sectors-33,new byte[33*512],"Removing backup PC partition metadata");
+            Write(disk,0,new byte[512],L.T("Removing old PC partition metadata"));Write(disk,1,new byte[33*512],L.T("Removing primary PC partition metadata"));Write(disk,sectors-33,new byte[33*512],L.T("Removing backup PC partition metadata"));
 
-            foreach(var v in volumes){var header=new byte[4096];Array.Copy(Encoding.ASCII.GetBytes("FATX"),header,4);Put(header,4,unchecked((uint)Environment.TickCount));Put(header,8,(uint)v.Spc);Put(header,12,1);Write(disk,v.Start,header,"Formatting "+v.Name);
+            foreach(var v in volumes){var header=new byte[4096];Array.Copy(Encoding.ASCII.GetBytes("FATX"),header,4);Put(header,4,unchecked((uint)Environment.TickCount));Put(header,8,(uint)v.Spc);Put(header,12,1);Write(disk,v.Start,header,L.T("Formatting ")+v.Name);
 
                 var allocated=v.Nodes.Where(n=>n.Clusters>0).OrderBy(n=>n.First).ToArray();int range=0;
 
@@ -312,7 +312,7 @@ internal sealed class Fatx {
 
                     if(id==0)value=v.Width==2?0xFFF8u:0xFFFFFFF8u;else if(range<allocated.Length&&id>=allocated[range].First)value=id==allocated[range].First+(long)allocated[range].Clusters-1?(v.Width==2?0xFFFFu:uint.MaxValue):(uint)(id+1);
 
-                    if(v.Width==4)Put(fat,i,value);else{fat[i]=(byte)value;fat[i+1]=(byte)(value>>8);}}Write(disk,v.Start+8+off/512,fat,"Formatting "+v.Name+" allocation table");}CopyVolume(disk,v);
+                    if(v.Width==4)Put(fat,i,value);else{fat[i]=(byte)value;fat[i+1]=(byte)(value>>8);}}Write(disk,v.Start+8+off/512,fat,L.T("Formatting ")+v.Name+L.T(" allocation table"));}CopyVolume(disk,v);
 
             }
 
@@ -320,7 +320,7 @@ internal sealed class Fatx {
 
             for(int i=0;i<14;i++){int off=48+i*32;for(int j=0;j<16;j++)table[off+j]=32;if(i<titles.Length)Array.Copy(Encoding.ASCII.GetBytes(titles[i]),0,table,off,titles[i].Length);if(i<order.Length&&order[i]<volumes.Count){var v=volumes[order[i]];Put(table,off+16,0x80000000);Put(table,off+20,(uint)v.Start);Put(table,off+24,(uint)v.Sectors);}}
 
-            cancel.ThrowIfCancellationRequested();disk.BeginFinalTableVerification();disk.Write(0,table,cancel);disk.Verify((m,a,b)=>progress("Verifying final partition table",a,b),cancel);
+            cancel.ThrowIfCancellationRequested();disk.BeginFinalTableVerification();disk.Write(0,table,cancel);disk.Verify((m,a,b)=>progress(L.T("Verifying final partition table"),a,b),cancel);
 
             watch.Stop();
 

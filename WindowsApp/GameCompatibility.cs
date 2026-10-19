@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using System.Collections;
 
@@ -44,7 +44,7 @@ internal sealed class GameCompatibility {
 
     readonly Dictionary<string,byte[]> replacements=new Dictionary<string,byte[]>(StringComparer.OrdinalIgnoreCase);
 
-    GameCompatibility(string root,string label){Root=root.TrimEnd('\\');Description=label.Replace(" (hardware test pending)","");}
+    GameCompatibility(string root,string label){Root=root.TrimEnd('\\');Description=label.Replace(L.T(" (hardware test pending)"),"");}
 
     static Dictionary<string,Dictionary<string,object>> LoadProfiles(){
 
@@ -70,7 +70,7 @@ internal sealed class GameCompatibility {
 
     static IEnumerable<Dictionary<string,object>> Records(object records){return ((IEnumerable)records).Cast<object>().Select(x=>(Dictionary<string,object>)x);}
 
-    static byte[] ReadTarget(string path){var file=new FileInfo(path);if((file.Attributes&FileAttributes.ReparsePoint)!=0||file.Length>64*1024*1024)throw new IOException("Unsupported compatibility-patch target: "+path);return File.ReadAllBytes(path);}
+    static byte[] ReadTarget(string path){var file=new FileInfo(path);if((file.Attributes&FileAttributes.ReparsePoint)!=0||file.Length>64*1024*1024)throw new IOException(L.T("Unsupported compatibility-patch target: ")+path);return File.ReadAllBytes(path);}
 
     public static GameCompatibility ForFolder(string folder,Func<GameCompatibility,bool> approval=null,CancellationToken cancellation=default(CancellationToken)){
 
@@ -109,7 +109,7 @@ internal sealed class GameCompatibility {
 
         var version=Records(profile["versions"]).SingleOrDefault(v=>(string)v["default_xbe_sha256"]==fingerprint||(v.ContainsKey("patched_xbe_sha256")&&(string)v["patched_xbe_sha256"]==fingerprint));if(version==null)return null;
 
-        var plan=new GameCompatibility(folder,fromImage?((string)version["label"]).Replace("convert folder to XISO","retain XISO"):((string)version["label"]));
+        var plan=new GameCompatibility(folder,fromImage?((string)version["label"]).Replace(L.T("convert folder to XISO"),L.T("retain XISO")):((string)version["label"]));
 
         object warning;if(version.TryGetValue("hardware_warning",out warning))plan.HardwareWarning=(string)warning;
 
@@ -119,37 +119,37 @@ internal sealed class GameCompatibility {
 
             if(fromImage)plan.KeepImage=true;else plan.Image=makeImage();plan.ImageLauncher=XisoImage.Launcher(Convert.ToUInt32(id,16),plan.FolderName??(string)version["label"]);
 
-            if(approval!=null&&!approval(plan))throw new OperationCanceledException("Game conversion declined; no HDD files changed.");return plan;
+            if(approval!=null&&!approval(plan))throw new OperationCanceledException(L.T("Game conversion declined; no HDD files changed."));return plan;
 
         }
 
-        var targets=Records(version["files"]).ToList();
+        var targets=Records(version[L.T("files")]).ToList();
 
         if(targets.Count>0&&targets.All(t=>t.ContainsKey("patched_sha256")&&Hash(read((string)t["path"]))==(string)t["patched_sha256"])&&Records(version["renames"]).All(r=>exists((string)r["to_prefix"])&&!exists((string)r["from_prefix"])))return new GameCompatibility(folder,((string)version["label"])+"  -  already patched"){FolderName=plan.FolderName};
 
         foreach(var rename in Records(version["renames"]))plan.renames.Add(Tuple.Create((string)rename["from_prefix"],(string)rename["to_prefix"]));
 
-        foreach(var file in Records(version["files"])){string relative=(string)file["path"];var original=read(relative);if(Hash(original)!=(string)file["sha256"])throw new IOException("Compatibility target does not match its fingerprint.");
+        foreach(var file in Records(version[L.T("files")])){string relative=(string)file["path"];var original=read(relative);if(Hash(original)!=(string)file["sha256"])throw new IOException(L.T("Compatibility target does not match its fingerprint."));
 
             using(var output=new MemoryStream()){int cursor=0;
 
-                foreach(var edit in Records(file["patches"]).OrderBy(e=>Convert.ToInt32(e["offset"]))){int offset=Convert.ToInt32(edit["offset"]);byte[] before=Hex((string)edit["before"]),after=Hex((string)edit["after"]);if(offset<cursor||offset>original.Length-before.Length||!original.Skip(offset).Take(before.Length).SequenceEqual(before))throw new IOException("Expected game patch bytes do not match.");output.Write(original,cursor,offset-cursor);output.Write(after,0,after.Length);cursor=offset+before.Length;}
+                foreach(var edit in Records(file["patches"]).OrderBy(e=>Convert.ToInt32(e["offset"]))){int offset=Convert.ToInt32(edit["offset"]);byte[] before=Hex((string)edit["before"]),after=Hex((string)edit[L.T("after")]);if(offset<cursor||offset>original.Length-before.Length||!original.Skip(offset).Take(before.Length).SequenceEqual(before))throw new IOException(L.T("Expected game patch bytes do not match."));output.Write(original,cursor,offset-cursor);output.Write(after,0,after.Length);cursor=offset+before.Length;}
 
-                output.Write(original,cursor,original.Length-cursor);var patched=output.ToArray();object expected;if(file.TryGetValue("patched_sha256",out expected)&&Hash(patched)!=(string)expected)throw new IOException("Generated game patch fingerprint does not match.");plan.replacements.Add(relative,patched);
+                output.Write(original,cursor,original.Length-cursor);var patched=output.ToArray();object expected;if(file.TryGetValue("patched_sha256",out expected)&&Hash(patched)!=(string)expected)throw new IOException(L.T("Generated game patch fingerprint does not match."));plan.replacements.Add(relative,patched);
 
             }
 
         }
 
-        object omit;if(version.TryGetValue("exclude_build_logs",out omit))foreach(var file in Records(omit)){string relative=(string)file["path"],expected=(string)file["sha256"],path=Path.Combine(folder,relative.Replace('/','\\'));if(exists(relative)&&Hash(read(relative))!=expected)throw new IOException("Build-log exclusion fingerprint does not match.");plan.omissions.Add(relative,expected);}
+        object omit;if(version.TryGetValue("exclude_build_logs",out omit))foreach(var file in Records(omit)){string relative=(string)file["path"],expected=(string)file["sha256"],path=Path.Combine(folder,relative.Replace('/','\\'));if(exists(relative)&&Hash(read(relative))!=expected)throw new IOException(L.T("Build-log exclusion fingerprint does not match."));plan.omissions.Add(relative,expected);}
 
-        if(plan.HasChanges&&approval!=null&&!approval(plan))throw new OperationCanceledException("Game patch declined; no HDD files changed.");
+        if(plan.HasChanges&&approval!=null&&!approval(plan))throw new OperationCanceledException(L.T("Game patch declined; no HDD files changed."));
 
         return plan;
 
     }
 
-    string Relative(string source){if(!source.StartsWith(Root+"\\",StringComparison.OrdinalIgnoreCase))throw new IOException("Source outside game patch root.");return source.Substring(Root.Length+1).Replace('\\','/');}
+    string Relative(string source){if(!source.StartsWith(Root+"\\",StringComparison.OrdinalIgnoreCase))throw new IOException(L.T("Source outside game patch root."));return source.Substring(Root.Length+1).Replace('\\','/');}
 
     public bool Skip(string source){return omissions.ContainsKey(Relative(source));}
 
@@ -157,7 +157,7 @@ internal sealed class GameCompatibility {
 
     public byte[] Replacement(string source){byte[] bytes;return replacements.TryGetValue(Relative(source),out bytes)?bytes:null;}
 
-    public static string KnownCases(){using(var stream=Assembly.GetExecutingAssembly().GetManifestResourceStream("game-compatibility.md"))using(var reader=new StreamReader(stream))return reader.ReadToEnd();}
+    public static string KnownCases(){var assembly=Assembly.GetExecutingAssembly();string resource=L.Language=="en"?"game-compatibility.md":"game-compatibility."+L.Language+".md";using(var stream=assembly.GetManifestResourceStream(resource)??assembly.GetManifestResourceStream("game-compatibility.md"))using(var reader=new StreamReader(stream,System.Text.Encoding.UTF8))return reader.ReadToEnd();}
 
 }
 
@@ -177,9 +177,9 @@ internal sealed class GamePatchConsent {
 
         Func<bool> show=()=>{
 
-            using(var dialog=new Form{Text="Game HDD compatibility fixes",Size=new System.Drawing.Size(780,550),MinimumSize=new System.Drawing.Size(620,400),StartPosition=FormStartPosition.CenterParent,MinimizeBox=false,MaximizeBox=false,Font=new System.Drawing.Font("Segoe UI",11),BackColor=System.Drawing.Color.FromArgb(12,20,30),ForeColor=System.Drawing.Color.FromArgb(220,230,235)}){
+            using(var dialog=new Form{Text=L.T("Game HDD compatibility fixes"),Size=new System.Drawing.Size(780,550),MinimumSize=new System.Drawing.Size(620,400),StartPosition=FormStartPosition.CenterParent,MinimizeBox=false,MaximizeBox=false,Font=new System.Drawing.Font("Segoe UI",11),BackColor=System.Drawing.Color.FromArgb(12,20,30),ForeColor=System.Drawing.Color.FromArgb(220,230,235)}){
 
-                var heading=new Label{Text="These games need compatibility fixes. Apply them to the HDD copies?\r\nYour Windows originals stay unchanged.",Dock=DockStyle.Top,Height=68,Padding=new Padding(12)};
+                var heading=new Label{Text=L.T("These games need compatibility fixes. Apply them to the HDD copies?\r\nYour Windows originals stay unchanged."),Dock=DockStyle.Top,Height=68,Padding=new Padding(12)};
 
                 var list=new TextBox{Multiline=true,ReadOnly=true,ScrollBars=ScrollBars.Vertical,Dock=DockStyle.Fill,BackColor=dialog.BackColor,ForeColor=dialog.ForeColor};
 
@@ -187,7 +187,7 @@ internal sealed class GamePatchConsent {
 
                 var buttons=new FlowLayoutPanel{Dock=DockStyle.Bottom,Height=58,FlowDirection=FlowDirection.RightToLeft,Padding=new Padding(10)};
 
-                var cancel=new Button{Text="Cancel",AutoSize=true,DialogResult=DialogResult.Cancel};var apply=new Button{Text="Apply all fixes",AutoSize=true,DialogResult=DialogResult.OK};
+                var cancel=new Button{Text=L.T("Cancel"),AutoSize=true,DialogResult=DialogResult.Cancel};var apply=new Button{Text=L.T("Apply all fixes"),AutoSize=true,DialogResult=DialogResult.OK};
 
                 buttons.Controls.Add(cancel);buttons.Controls.Add(apply);dialog.Controls.Add(list);dialog.Controls.Add(heading);dialog.Controls.Add(buttons);dialog.AcceptButton=apply;dialog.CancelButton=cancel;
 
@@ -199,7 +199,7 @@ internal sealed class GamePatchConsent {
 
         bool approved=owner.InvokeRequired?(bool)owner.Invoke(show):show();
 
-        if(!approved)throw new OperationCanceledException("Game patches declined; no HDD files changed.");
+        if(!approved)throw new OperationCanceledException(L.T("Game patches declined; no HDD files changed."));
 
     }
 

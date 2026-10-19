@@ -1,0 +1,107 @@
+{
+  " | Free ": [
+    " | Frei ",
+    " | Libre ",
+    " | Libre ",
+    " | Libero ",
+    " | Livre "
+  ],
+  " | Files ": [
+    " | Dateien ",
+    " | Archivos ",
+    " | Fichiers ",
+    " | File ",
+    " | Ficheiros "
+  ],
+  " | Folders (including root): ": [
+    " | Ordner (mit Stammordner): ",
+    " | Carpetas (incluida raíz): ",
+    " | Dossiers (racine comprise) : ",
+    " | Cartelle (radice inclusa): ",
+    " | Pastas (incluindo raiz): "
+  ],
+  " | Game fixes: ": [
+    " | Spielkorrekturen: ",
+    " | Correcciones: ",
+    " | Correctifs : ",
+    " | Correzioni: ",
+    " | Correções: "
+  ],
+  " | Items ": [
+    " | Objekte ",
+    " | Elementos ",
+    " | Éléments ",
+    " | Elementi ",
+    " | Itens "
+  ],
+  " | Warnings: ": [
+    " | Warnungen: ",
+    " | Avisos: ",
+    " | Avertissements : ",
+    " | Avvisi: ",
+    " | Avisos: "
+  ],
+  " | Total elapsed time: ": [
+    " | Gesamtzeit: ",
+    " | Tiempo total: ",
+    " | Durée totale : ",
+    " | Tempo totale: ",
+    " | Tempo total: "
+  ],
+  " | Incomplete copy removed.": [
+    " | Unvollständige Kopie entfernt.",
+    " | Copia incompleta eliminada.",
+    " | Copie incomplète supprimée.",
+    " | Copia incompleta rimossa.",
+    " | Cópia incompleta removida."
+  ],
+  " | Cleanup failed. Incomplete folder remains: ": [
+    " | Bereinigung fehlgeschlagen. Unvollständiger Ordner verbleibt: ",
+    " | Limpieza fallida. Queda carpeta incompleta: ",
+    " | Nettoyage échoué. Dossier incomplet restant : ",
+    " | Pulizia non riuscita. Resta cartella incompleta: ",
+    " | Limpeza falhou. Pasta incompleta restante: "
+  ],
+  "Xbox XISO images (*.iso;*.xiso)|*.iso;*.xiso": [
+    "Xbox-XISO-Abbilder (*.iso;*.xiso)|*.iso;*.xiso",
+    "Imágenes XISO Xbox (*.iso;*.xiso)|*.iso;*.xiso",
+    "Images XISO Xbox (*.iso;*.xiso)|*.iso;*.xiso",
+    "Immagini XISO Xbox (*.iso;*.xiso)|*.iso;*.xiso",
+    "Imagens XISO Xbox (*.iso;*.xiso)|*.iso;*.xiso"
+  ],
+  "Game size: %.2f GB | Free space: %.2f GB | %s": [
+    "Spielgröße: %.2f GB | Frei: %.2f GB | %s",
+    "Tamaño del juego: %.2f GB | Libre: %.2f GB | %s",
+    "Taille du jeu : %.2f Go | Libre : %.2f Go | %s",
+    "Dimensione gioco: %.2f GB | Libero: %.2f GB | %s",
+    "Tamanho do jogo: %.2f GB | Livre: %.2f GB | %s"
+  ],
+  " | Total data copied: %.2f GB (%llu bytes)": [
+    " | Daten kopiert: %.2f GB (%llu Bytes)",
+    " | Datos copiados: %.2f GB (%llu bytes)",
+    " | Données copiées : %.2f Go (%llu octets)",
+    " | Dati copiati: %.2f GB (%llu byte)",
+    " | Dados copiados: %.2f GB (%llu bytes)"
+  ],
+  "%c free %llu.%lluG": [
+    "%c frei %llu.%lluG",
+    "%c libre %llu.%lluG",
+    "%c libre %llu.%lluG",
+    "%c libero %llu.%lluG",
+    "%c livre %llu.%lluG"
+  ],
+  "%u%%   Elapsed: %s": [
+    "%u%%   Vergangen: %s",
+    "%u%%   Transcurrido: %s",
+    "%u%%   Écoulé : %s",
+    "%u%%   Trascorso: %s",
+    "%u%%   Decorrido: %s"
+  ],
+  "TEMP: CPU %luC  BOARD %luC": [
+    "TEMP: CPU %luC  PLATINE %luC",
+    "TEMP: CPU %luC  PLACA %luC",
+    "TEMP : CPU %luC  CARTE %luC",
+    "TEMP: CPU %luC  SCHEDA %luC",
+    "TEMP: CPU %luC  PLACA %luC"
+  ]
+}

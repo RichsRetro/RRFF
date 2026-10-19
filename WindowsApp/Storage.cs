@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using System.Collections.Generic;
 
@@ -30,7 +30,7 @@ internal sealed class Target {
 
     public string Identity { get { return Number+"|"+Size+"|"+Model+"|"+Serial+"|"+UniqueId+"|"+Path; } }
 
-    public override string ToString() { return "Disk "+Number+"  -  "+Model+"  -  "+(Size/1000000000.0).ToString("0.0")+" GB  -  S/N "+(Serial.Length==0?"unavailable":Serial); }
+    public override string ToString() { return L.T("Disk ")+Number+"  -  "+Model+"  -  "+(Size/1000000000.0).ToString("0.0")+" GB  -  S/N "+(Serial.Length==0?"unavailable":Serial); }
 
 }
 
@@ -38,7 +38,7 @@ internal static class Storage {
 
     const string Scope=@"\\.\root\Microsoft\Windows\Storage";
 
-    static bool RequiredBool(ManagementBaseObject o,string key) { if(o[key]==null)throw new IOException("Windows did not provide disk protection information."); return Convert.ToBoolean(o[key]); }
+    static bool RequiredBool(ManagementBaseObject o,string key) { if(o[key]==null)throw new IOException(L.T("Windows did not provide disk protection information.")); return Convert.ToBoolean(o[key]); }
 
     public static List<Target> Scan() {
 
@@ -70,7 +70,7 @@ internal static class Storage {
 
             var t=all.SingleOrDefault(x=>x.Number==Convert.ToInt32(p["DiskNumber"]));
 
-            if(t==null)throw new IOException("Windows partition ownership is incomplete. Formatting is blocked.");
+            if(t==null)throw new IOException(L.T("Windows partition ownership is incomplete. Formatting is blocked."));
 
             t.Protected |= RequiredBool(p,"IsBoot")|RequiredBool(p,"IsSystem");
 

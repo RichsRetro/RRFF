@@ -42,13 +42,13 @@ internal sealed class ExplorerDisk:IDisposable {
 
     readonly List<string> importFixes=new List<string>();
 
-    public string LastGameFixSummary {get{return importFixes.Count==0?"":" | Game fixes: "+String.Join("; ",importFixes.Distinct());}}
+    public string LastGameFixSummary {get{return importFixes.Count==0?"":L.T(" | Game fixes: ")+String.Join("; ",importFixes.Distinct());}}
 
     XboxPartition volume;byte[] fat;bool ownershipChecked,faulted;uint nextFree=1;
 
     public ExplorerDisk(Target selected,CancellationToken cancel,bool readOnly=false){
 
-        target=selected;token=cancel;if(target.Sector!=512)throw new IOException("FATX browsing requires 512-byte logical sectors.");
+        target=selected;token=cancel;if(target.Sector!=512)throw new IOException(L.T("FATX browsing requires 512-byte logical sectors."));
 
         disk=new RawDisk(target,readOnly);
 
@@ -72,9 +72,9 @@ internal sealed class ExplorerDisk:IDisposable {
 
             }
 
-            if(Partitions.Count==0)throw new IOException("No valid FATX partitions found. This drive was not changed.");
+            if(Partitions.Count==0)throw new IOException(L.T("No valid FATX partitions found. This drive was not changed."));
 
-            var sorted=Partitions.OrderBy(p=>p.Start).ToArray();for(int i=1;i<sorted.Length;i++)if(sorted[i-1].Start+sorted[i-1].Sectors>sorted[i].Start)throw new IOException("Overlapping FATX partitions. Editing blocked.");
+            var sorted=Partitions.OrderBy(p=>p.Start).ToArray();for(int i=1;i<sorted.Length;i++)if(sorted[i-1].Start+sorted[i-1].Sectors>sorted[i].Start)throw new IOException(L.T("Overlapping FATX partitions. Editing blocked."));
 
         }catch{disk.Dispose();throw;}
 
@@ -84,17 +84,17 @@ internal sealed class ExplorerDisk:IDisposable {
 
     void AddPartition(string name,long start,long sectors){
 
-        if(start<1||sectors<16||start>target.Size/512-sectors)throw new IOException("Partition outside selected-drive bounds.");
+        if(start<1||sectors<16||start>target.Size/512-sectors)throw new IOException(L.T("Partition outside selected-drive bounds."));
 
-        var header=disk.Read(start,4096,token);if(Encoding.ASCII.GetString(header,0,4)!="FATX"){if(tablePresent)headerIssues.Add(name+": enabled partition has no valid FATX header");return;}
+        var header=disk.Read(start,4096,token);if(Encoding.ASCII.GetString(header,0,4)!="FATX"){if(tablePresent)headerIssues.Add(name+L.T(": enabled partition has no valid FATX header"));return;}
 
-        uint spc=U32(header,8);if(spc<1||spc>128||(spc&(spc-1))!=0)throw new IOException("Unsupported FATX cluster size.");
+        uint spc=U32(header,8);if(spc<1||spc>128||(spc&(spc-1))!=0)throw new IOException(L.T("Unsupported FATX cluster size."));
 
         long entries=sectors/spc+1;int width=entries>=0xFFF0?4:2;long fatBytes=((entries*width+4095)/4096)*4096;
 
         long count=(sectors*512-4096-fatBytes)/(spc*512);uint root=U32(header,12);
 
-        if(count<1||count>0x0FFFFFF0||root<1||root>count||fatBytes>int.MaxValue)throw new IOException("Invalid FATX geometry.");
+        if(count<1||count>0x0FFFFFF0||root<1||root>count||fatBytes>int.MaxValue)throw new IOException(L.T("Invalid FATX geometry."));
 
         Partitions.Add(new XboxPartition{Name=name,Start=start,Sectors=sectors,FatBytes=fatBytes,DataStart=start+8+fatBytes/512,Count=count,ClusterBytes=(int)spc*512,Width=width,Root=root});
 
@@ -102,7 +102,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
     public void Select(XboxPartition selected){
 
-        if(!Partitions.Contains(selected))throw new IOException("Unknown partition.");
+        if(!Partitions.Contains(selected))throw new IOException(L.T("Unknown partition."));
 
         volume=selected;fat=disk.Read(volume.Start+8,checked((int)volume.FatBytes),token);ownershipChecked=false;nextFree=1;
 
@@ -110,35 +110,35 @@ internal sealed class ExplorerDisk:IDisposable {
 
     public XboxEntry Root {get{return new XboxEntry{Name=volume.Name+":",Directory=true,First=volume.Root};}}
 
-    uint GetFat(uint id){if(id<1||id>volume.Count)throw new IOException("Cluster outside partition.");int off=checked((int)id*volume.Width);return volume.Width==4?U32(fat,off):BitConverter.ToUInt16(fat,off);}
+    uint GetFat(uint id){if(id<1||id>volume.Count)throw new IOException(L.T("Cluster outside partition."));int off=checked((int)id*volume.Width);return volume.Width==4?U32(fat,off):BitConverter.ToUInt16(fat,off);}
 
     uint End {get{return volume.Width==4?uint.MaxValue:0xFFFFu;}}
 
     void SetFat(uint id,uint value){int off=checked((int)id*volume.Width);var b=BitConverter.GetBytes(value);Array.Copy(b,0,fat,off,volume.Width);}
 
-    long Sector(uint cluster){if(cluster<1||cluster>volume.Count)throw new IOException("Cluster outside partition.");return volume.DataStart+(cluster-1L)*volume.ClusterBytes/512;}
+    long Sector(uint cluster){if(cluster<1||cluster>volume.Count)throw new IOException(L.T("Cluster outside partition."));return volume.DataStart+(cluster-1L)*volume.ClusterBytes/512;}
 
     List<uint> Chain(XboxEntry item){
 
-        var result=new List<uint>();if(item.First==0){if(item.Directory||item.Size!=0)throw new IOException("Missing cluster chain: "+item.Name);return result;}
+        var result=new List<uint>();if(item.First==0){if(item.Directory||item.Size!=0)throw new IOException(L.T("Missing cluster chain: ")+item.Name);return result;}
 
         var visited=new HashSet<uint>();uint id=item.First;
 
-        while(true){token.ThrowIfCancellationRequested();if(id<1||id>volume.Count||!visited.Add(id))throw new IOException("Invalid/cyclic cluster chain: "+item.Name);result.Add(id);uint next=GetFat(id);if(next>= (volume.Width==4?0xFFFFFFF8u:0xFFF8u))break;if(next==0)throw new IOException("Unallocated cluster in "+item.Name);id=next;}
+        while(true){token.ThrowIfCancellationRequested();if(id<1||id>volume.Count||!visited.Add(id))throw new IOException(L.T("Invalid/cyclic cluster chain: ")+item.Name);result.Add(id);uint next=GetFat(id);if(next>= (volume.Width==4?0xFFFFFFF8u:0xFFF8u))break;if(next==0)throw new IOException(L.T("Unallocated cluster in ")+item.Name);id=next;}
 
-        if(!item.Directory&&(long)result.Count*volume.ClusterBytes<item.Size)throw new IOException("Short cluster chain: "+item.Name);return result;
+        if(!item.Directory&&(long)result.Count*volume.ClusterBytes<item.Size)throw new IOException(L.T("Short cluster chain: ")+item.Name);return result;
 
     }
 
     public List<XboxEntry> List(XboxEntry folder){
 
-        if(!folder.Directory)throw new IOException("Not a folder.");var entries=new List<XboxEntry>();var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if(!folder.Directory)throw new IOException(L.T("Not a folder."));var entries=new List<XboxEntry>();var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach(uint id in Chain(folder)){var bytes=disk.Read(Sector(id),volume.ClusterBytes,token);
 
-            for(int pos=0;pos<bytes.Length;pos+=64){int len=bytes[pos];if(len==0||len==255)return entries;if(len==0xE5)continue;if(len>42)throw new IOException("Invalid FATX directory entry.");
+            for(int pos=0;pos<bytes.Length;pos+=64){int len=bytes[pos];if(len==0||len==255)return entries;if(len==0xE5)continue;if(len>42)throw new IOException(L.T("Invalid FATX directory entry."));
 
-                string name=FatxNames.Decode(bytes,pos+2,len);if(name=="."||name==".."||name.IndexOfAny(new[]{'\\','/',':','\0'})>=0||!names.Add(name))throw new IOException("Unsafe or duplicate directory entry.");
+                string name=FatxNames.Decode(bytes,pos+2,len);if(name=="."||name==".."||name.IndexOfAny(new[]{'\\','/',':','\0'})>=0||!names.Add(name))throw new IOException(L.T("Unsafe or duplicate directory entry."));
 
                 entries.Add(new XboxEntry{Name=name,Directory=(bytes[pos+1]&16)!=0,First=U32(bytes,pos+44),Size=U32(bytes,pos+48),Slot=Sector(id)*512+pos});
 
@@ -152,15 +152,15 @@ internal sealed class ExplorerDisk:IDisposable {
 
     public void GuardWrites(Action<string,long,long> progress){
 
-        if(faulted)throw new IOException("A previous write failed. Reopen the HDD before editing again.");Storage.Recheck(target);if(ownershipChecked)return;
+        if(faulted)throw new IOException(L.T("A previous write failed. Reopen the HDD before editing again."));Storage.Recheck(target);if(ownershipChecked)return;
 
-        progress("Checking directory ownership before editing",0,0);var used=new HashSet<uint>();int entries=0;
+        progress(L.T("Checking directory ownership before editing"),0,0);var used=new HashSet<uint>();int entries=0;
 
         Action<XboxEntry,int> visit=null;visit=(entry,depth)=>{
 
-            token.ThrowIfCancellationRequested();if(depth>64||++entries>2000000)throw new IOException("Directory tree is too deep or damaged.");
+            token.ThrowIfCancellationRequested();if(depth>64||++entries>2000000)throw new IOException(L.T("Directory tree is too deep or damaged."));
 
-            foreach(uint id in Chain(entry))if(!used.Add(id))throw new IOException("Cross-linked files found. Editing blocked.");
+            foreach(uint id in Chain(entry))if(!used.Add(id))throw new IOException(L.T("Cross-linked files found. Editing blocked."));
 
             if(entry.Directory)foreach(var child in List(entry))visit(child,depth+1);
 
@@ -176,7 +176,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
         var block=disk.Read(sector,size,ioToken);Array.Copy(bytes,0,block,within,bytes.Length);disk.Write(sector,block,ioToken,false);disk.Flush();
 
-        if(!disk.Read(sector,size,ioToken).SequenceEqual(block))throw new IOException("Metadata read-back mismatch. Stop editing this drive.");
+        if(!disk.Read(sector,size,ioToken).SequenceEqual(block))throw new IOException(L.T("Metadata read-back mismatch. Stop editing this drive."));
 
     }
 
@@ -190,7 +190,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
             var bytes=new byte[(end-at)*512];Array.Copy(fat,sectors[at]*512,bytes,0,bytes.Length);disk.Write(volume.Start+8+sectors[at],bytes,ioToken,false);disk.Flush();
 
-            if(!disk.Read(volume.Start+8+sectors[at],bytes.Length,ioToken).SequenceEqual(bytes))throw new IOException("FAT read-back mismatch. Stop editing this drive.");at=end;
+            if(!disk.Read(volume.Start+8+sectors[at],bytes.Length,ioToken).SequenceEqual(bytes))throw new IOException(L.T("FAT read-back mismatch. Stop editing this drive."));at=end;
 
         }
 
@@ -206,7 +206,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
         }
 
-        if(allocated.Count!=count)throw new IOException("Not enough free space.");
+        if(allocated.Count!=count)throw new IOException(L.T("Not enough free space."));
 
         for(int i=0;i<count;i++)SetFat(allocated[i],i+1<count?allocated[i+1]:End);nextFree=allocated[count-1]==volume.Count?1:allocated[count-1]+1;return allocated;
 
@@ -244,7 +244,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
     public XboxEntry NewFolder(XboxEntry parent,string name){
 
-        ValidateName(name);if(List(parent).Any(x=>String.Equals(x.Name,name,StringComparison.OrdinalIgnoreCase)))throw new IOException("That name already exists.");
+        ValidateName(name);if(List(parent).Any(x=>String.Equals(x.Name,name,StringComparison.OrdinalIgnoreCase)))throw new IOException(L.T("That name already exists."));
 
         long slot=FindSlot(parent);var chain=Allocate(1);bool published=false;
 
@@ -258,28 +258,28 @@ internal sealed class ExplorerDisk:IDisposable {
 
     internal List<ExportItem> ExportItems(IEnumerable<XboxEntry> selected,Action<string,long,long> progress=null){
         var items=new List<ExportItem>();var paths=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        Action<XboxEntry,string,int> visit=null;visit=(entry,parent,depth)=>{token.ThrowIfCancellationRequested();if(depth>64)throw new IOException("Directory tree too deep.");string name=parent.Length==0?entry.Name:parent+"\\"+entry.Name;if(name.Length>=260||!paths.Add(name))throw new IOException("Windows drag path is too long or duplicated. Use Copy to PC instead.");items.Add(new ExportItem{Name=name,Entry=entry,Chain=Chain(entry)});if(progress!=null)progress("Preparing "+name,items.Count,0);if(entry.Directory)foreach(var child in List(entry))visit(child,name,depth+1);};foreach(var entry in selected)visit(entry,"",0);return items;
+        Action<XboxEntry,string,int> visit=null;visit=(entry,parent,depth)=>{token.ThrowIfCancellationRequested();if(depth>64)throw new IOException(L.T("Directory tree too deep."));string name=parent.Length==0?entry.Name:parent+"\\"+entry.Name;if(name.Length>=260||!paths.Add(name))throw new IOException(L.T("Windows drag path is too long or duplicated. Use Copy to PC instead."));items.Add(new ExportItem{Name=name,Entry=entry,Chain=Chain(entry)});if(progress!=null)progress(L.T("Preparing ")+name,items.Count,0);if(entry.Directory)foreach(var child in List(entry))visit(child,name,depth+1);};foreach(var entry in selected)visit(entry,"",0);return items;
     }
     internal int ReadExport(ExportItem item,long position,byte[] output,int count){
-        token.ThrowIfCancellationRequested();if(position<0||count<0||count>output.Length||item.Entry.Directory)throw new IOException("Invalid export read.");int total=(int)Math.Min(count,Math.Max(0,(long)item.Entry.Size-position));int copied=0;
-        while(copied<total){token.ThrowIfCancellationRequested();int index=checked((int)(position/volume.ClusterBytes)),within=(int)(position%volume.ClusterBytes);if(index>=item.Chain.Count)throw new IOException("Short export chain.");int clusters=1;int max=Math.Max(1,1024*1024/volume.ClusterBytes);while(index+clusters<item.Chain.Count&&clusters<max&&item.Chain[index+clusters]==item.Chain[index+clusters-1]+1&&(long)clusters*volume.ClusterBytes-within<total-copied)clusters++;byte[] bytes;lock(disk){bytes=disk.Read(Sector(item.Chain[index]),checked(clusters*volume.ClusterBytes),token);}int n=Math.Min(total-copied,bytes.Length-within);Array.Copy(bytes,within,output,copied,n);copied+=n;position+=n;}return copied;
+        token.ThrowIfCancellationRequested();if(position<0||count<0||count>output.Length||item.Entry.Directory)throw new IOException(L.T("Invalid export read."));int total=(int)Math.Min(count,Math.Max(0,(long)item.Entry.Size-position));int copied=0;
+        while(copied<total){token.ThrowIfCancellationRequested();int index=checked((int)(position/volume.ClusterBytes)),within=(int)(position%volume.ClusterBytes);if(index>=item.Chain.Count)throw new IOException(L.T("Short export chain."));int clusters=1;int max=Math.Max(1,1024*1024/volume.ClusterBytes);while(index+clusters<item.Chain.Count&&clusters<max&&item.Chain[index+clusters]==item.Chain[index+clusters-1]+1&&(long)clusters*volume.ClusterBytes-within<total-copied)clusters++;byte[] bytes;lock(disk){bytes=disk.Read(Sector(item.Chain[index]),checked(clusters*volume.ClusterBytes),token);}int n=Math.Min(total-copied,bytes.Length-within);Array.Copy(bytes,within,output,copied,n);copied+=n;position+=n;}return copied;
     }
 
     public void Export(IEnumerable<XboxEntry> selection,string destination,Action<string,long,long> progress){
 
-        progress("Checking PC destination and preparing file list...",0,0);
+        progress(L.T("Checking PC destination and preparing file list..."),0,0);
         Storage.ProtectSources(target,new InstallPlan{CFolder=destination});var jobs=new List<Tuple<XboxEntry,string,List<uint>>>();var directories=new List<string>();long scannedBytes=0;int scanned=0;
 
-        Action<XboxEntry,string,int> collect=null;collect=(entry,path,depth)=>{token.ThrowIfCancellationRequested();if(depth>64)throw new IOException("Directory tree too deep.");
+        Action<XboxEntry,string,int> collect=null;collect=(entry,path,depth)=>{token.ThrowIfCancellationRequested();if(depth>64)throw new IOException(L.T("Directory tree too deep."));
 
-            scanned++;progress("Scanning "+scanned.ToString("N0")+" entries | "+jobs.Count.ToString("N0")+" files | "+(scannedBytes/1000000.0).ToString("0.0")+" MB found | "+entry.Name,0,0);
-            string file=Path.Combine(path,entry.Name);if(File.Exists(file)||Directory.Exists(file))throw new IOException("Destination already exists: "+file);
+            scanned++;progress(L.T("Scanning ")+scanned.ToString("N0")+" entries | "+jobs.Count.ToString("N0")+" files | "+(scannedBytes/1000000.0).ToString("0.0")+" MB found | "+entry.Name,0,0);
+            string file=Path.Combine(path,entry.Name);if(File.Exists(file)||Directory.Exists(file))throw new IOException(L.T("Destination already exists: ")+file);
 
             if(entry.Directory){directories.Add(file);foreach(var child in List(entry))collect(child,file,depth+1);}else{jobs.Add(Tuple.Create(entry,file,Chain(entry)));scannedBytes+=entry.Size;}
 
         };foreach(var entry in selection)collect(entry,destination,0);
 
-        long total=jobs.Sum(j=>(long)j.Item1.Size),done=0;int made=0;foreach(string dir in directories){token.ThrowIfCancellationRequested();progress("Preparing PC folders "+made.ToString("N0")+" / "+directories.Count.ToString("N0"),0,0);Directory.CreateDirectory(dir);made++;}int count=0;progress("Starting copy | "+jobs.Count.ToString("N0")+" files | "+(total/1000000.0).ToString("0.0")+" MB",0,total);
+        long total=jobs.Sum(j=>(long)j.Item1.Size),done=0;int made=0;foreach(string dir in directories){token.ThrowIfCancellationRequested();progress(L.T("Preparing PC folders ")+made.ToString("N0")+" / "+directories.Count.ToString("N0"),0,0);Directory.CreateDirectory(dir);made++;}int count=0;progress("Starting copy | "+jobs.Count.ToString("N0")+" files | "+(total/1000000.0).ToString("0.0")+" MB",0,total);
 
         using(var linked=CancellationTokenSource.CreateLinkedTokenSource(token))using(var queue=new BlockingCollection<ExportBlock>(4)){
             Exception readFailure=null;
@@ -289,19 +289,19 @@ internal sealed class ExplorerDisk:IDisposable {
                     linked.Token.ThrowIfCancellationRequested();var job=jobs[jobIndex];long left=job.Item1.Size;var chain=job.Item3;int maxClusters=Math.Max(1,1024*1024/volume.ClusterBytes);
                     if(left==0){queue.Add(new ExportBlock{Job=jobIndex,Bytes=new byte[0],Last=true},linked.Token);continue;}
                     for(int at=0;at<chain.Count&&left>0;){linked.Token.ThrowIfCancellationRequested();int end=at+1;while(end<chain.Count&&end-at<maxClusters&&chain[end]==chain[end-1]+1)end++;var bytes=disk.Read(Sector(chain[at]),checked((end-at)*volume.ClusterBytes),linked.Token);int length=(int)Math.Min(left,bytes.Length);left-=length;queue.Add(new ExportBlock{Job=jobIndex,Bytes=bytes,Length=length,Last=left==0},linked.Token);at=end;}
-                    if(left!=0)throw new IOException("Source file chain ended early.");
+                    if(left!=0)throw new IOException(L.T("Source file chain ended early."));
                 }}catch(Exception e){readFailure=e;}finally{queue.CompleteAdding();}
             },CancellationToken.None,TaskCreationOptions.LongRunning,TaskScheduler.Default);
             FileStream output=null;string activePath=null;int activeJob=-1;bool created=false,complete=false;
             try{
                 foreach(var block in queue.GetConsumingEnumerable(linked.Token)){
                     token.ThrowIfCancellationRequested();var job=jobs[block.Job];
-                    if(output==null){if(block.Job!=count)throw new IOException("Unexpected export file order.");activePath=job.Item2;created=false;complete=false;activeJob=block.Job;output=new FileStream(activePath,FileMode.CreateNew,FileAccess.Write,FileShare.None,65536,FileOptions.SequentialScan);created=true;}
-                    if(activeJob!=block.Job)throw new IOException("Export file ended unexpectedly.");
-                    output.Write(block.Bytes,0,block.Length);done+=block.Length;progress("Copying out "+job.Item1.Name+" | Files "+count+" / "+jobs.Count,done,total);
-                    if(block.Last){output.Flush();output.Dispose();output=null;complete=true;count++;progress("Copied out "+count+" / "+jobs.Count+" files",done,total);}
+                    if(output==null){if(block.Job!=count)throw new IOException(L.T("Unexpected export file order."));activePath=job.Item2;created=false;complete=false;activeJob=block.Job;output=new FileStream(activePath,FileMode.CreateNew,FileAccess.Write,FileShare.None,65536,FileOptions.SequentialScan);created=true;}
+                    if(activeJob!=block.Job)throw new IOException(L.T("Export file ended unexpectedly."));
+                    output.Write(block.Bytes,0,block.Length);done+=block.Length;progress(L.T("Copying out ")+job.Item1.Name+L.T(" | Files ")+count+" / "+jobs.Count,done,total);
+                    if(block.Last){output.Flush();output.Dispose();output=null;complete=true;count++;progress(L.T("Copied out ")+count+" / "+jobs.Count+L.T(" files"),done,total);}
                 }
-                reader.GetAwaiter().GetResult();token.ThrowIfCancellationRequested();if(readFailure!=null)throw new IOException("Source read failed during export.",readFailure);if(output!=null||count!=jobs.Count)throw new IOException("Export did not finish every file.");
+                reader.GetAwaiter().GetResult();token.ThrowIfCancellationRequested();if(readFailure!=null)throw new IOException(L.T("Source read failed during export."),readFailure);if(output!=null||count!=jobs.Count)throw new IOException(L.T("Export did not finish every file."));
             }finally{
                 try{if(output!=null)output.Dispose();}finally{linked.Cancel();reader.GetAwaiter().GetResult();if(created&&!complete&&activePath!=null&&File.Exists(activePath))File.Delete(activePath);}
             }
@@ -322,7 +322,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
     Source ScanSource(string path,int depth,GameCompatibility game=null,Func<GameCompatibility,bool> approval=null,bool looseGame=false){
 
-        token.ThrowIfCancellationRequested();if(!looseGame&&game==null&&File.Exists(path)&&XisoReader.Candidate(path))return ImageSource(new XisoImport(path,approval,token));if(depth>64)throw new IOException("Source is too deep.");var attributes=File.GetAttributes(path);if((attributes&FileAttributes.ReparsePoint)!=0)throw new IOException("Links/junctions are not supported.");var source=new Source{Path=path,Name=Path.GetFileName(path.TrimEnd('\\')),Directory=(attributes&FileAttributes.Directory)!=0};if(source.Directory){var found=GameCompatibility.ForFolder(path,approval,token);if(found!=null){game=found;if(found.FolderName!=null)source.Name=found.FolderName;importFixes.Add(found.Description);}}if(game!=null&&!path.Equals(game.Root,StringComparison.OrdinalIgnoreCase))source.Name=game.Name(path);ValidateName(source.Name);
+        token.ThrowIfCancellationRequested();if(!looseGame&&game==null&&File.Exists(path)&&XisoReader.Candidate(path))return ImageSource(new XisoImport(path,approval,token));if(depth>64)throw new IOException(L.T("Source is too deep."));var attributes=File.GetAttributes(path);if((attributes&FileAttributes.ReparsePoint)!=0)throw new IOException(L.T("Links/junctions are not supported."));var source=new Source{Path=path,Name=Path.GetFileName(path.TrimEnd('\\')),Directory=(attributes&FileAttributes.Directory)!=0};if(source.Directory){var found=GameCompatibility.ForFolder(path,approval,token);if(found!=null){game=found;if(found.FolderName!=null)source.Name=found.FolderName;importFixes.Add(found.Description);}}if(game!=null&&!path.Equals(game.Root,StringComparison.OrdinalIgnoreCase))source.Name=game.Name(path);ValidateName(source.Name);
 
         if(source.Directory&&game!=null&&game.Image!=null&&path.Equals(game.Root,StringComparison.OrdinalIgnoreCase)){
 
@@ -332,7 +332,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
         }
 
-        if(source.Directory){var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);foreach(string child in Directory.EnumerateFileSystemEntries(path)){if(game!=null&&File.Exists(child)&&game.Skip(child))continue;var scanned=ScanSource(child,depth+1,game,approval,looseGame||File.Exists(Path.Combine(path,"default.xbe")));if(!names.Add(scanned.Name))throw new IOException("Case-insensitive source-name collision.");source.Children.Add(scanned);}}else{var info=new FileInfo(path);source.SourceSize=source.Size=info.Length;source.Stamp=info.LastWriteTimeUtc;if(game!=null)source.PatchedData=game.Replacement(path);if(source.PatchedData!=null)source.Size=source.PatchedData.LongLength;if(source.Size>uint.MaxValue)throw new IOException("FATX files must be smaller than 4 GiB.");}return source;
+        if(source.Directory){var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);foreach(string child in Directory.EnumerateFileSystemEntries(path)){if(game!=null&&File.Exists(child)&&game.Skip(child))continue;var scanned=ScanSource(child,depth+1,game,approval,looseGame||File.Exists(Path.Combine(path,"default.xbe")));if(!names.Add(scanned.Name))throw new IOException(L.T("Case-insensitive source-name collision."));source.Children.Add(scanned);}}else{var info=new FileInfo(path);source.SourceSize=source.Size=info.Length;source.Stamp=info.LastWriteTimeUtc;if(game!=null)source.PatchedData=game.Replacement(path);if(source.PatchedData!=null)source.Size=source.PatchedData.LongLength;if(source.Size>uint.MaxValue)throw new IOException(L.T("FATX files must be smaller than 4 GiB."));}return source;
 
     }
 
@@ -344,9 +344,9 @@ internal sealed class ExplorerDisk:IDisposable {
 
         Action<Source> count=null;count=s=>{if(s.Directory){required+=Math.Max(1,(s.Children.Count+1L)*64/volume.ClusterBytes+1)*volume.ClusterBytes;foreach(var child in s.Children)count(child);}else{total+=s.Size;required+=((s.Size+volume.ClusterBytes-1)/volume.ClusterBytes)*volume.ClusterBytes;totalFiles++;}};
 
-        foreach(var root in roots){if(!existing.Add(root.Name))throw new IOException("Name already exists; nothing overwritten: "+root.Name);count(root);}required+=volume.ClusterBytes*((roots.Count*64L+volume.ClusterBytes-1)/volume.ClusterBytes+1);
+        foreach(var root in roots){if(!existing.Add(root.Name))throw new IOException(L.T("Name already exists; nothing overwritten: ")+root.Name);count(root);}required+=volume.ClusterBytes*((roots.Count*64L+volume.ClusterBytes-1)/volume.ClusterBytes+1);
 
-        if(required>FreeBytes)throw new IOException("Not enough free space.");if(confirmPatches!=null)confirmPatches();token.ThrowIfCancellationRequested();GuardWrites(progress);long done=0;int completed=0;
+        if(required>FreeBytes)throw new IOException(L.T("Not enough free space."));if(confirmPatches!=null)confirmPatches();token.ThrowIfCancellationRequested();GuardWrites(progress);long done=0;int completed=0;
 
         foreach(var source in roots)ImportTree(parent,source,total,totalFiles,ref done,ref completed,progress);
 
@@ -370,7 +370,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
         }
 
-        public void Write(long sector,byte[] bytes){try{queue.Add(Tuple.Create(sector,bytes),linked.Token);}catch(OperationCanceledException){if(failure!=null&&!userCancel.IsCancellationRequested)throw new IOException("Destination write failed.",failure);throw;}}
+        public void Write(long sector,byte[] bytes){try{queue.Add(Tuple.Create(sector,bytes),linked.Token);}catch(OperationCanceledException){if(failure!=null&&!userCancel.IsCancellationRequested)throw new IOException(L.T("Destination write failed."),failure);throw;}}
 
         public void Complete(){queue.CompleteAdding();worker.Wait();completed=true;if(failure!=null)throw failure;userCancel.ThrowIfCancellationRequested();}
 
@@ -438,25 +438,25 @@ internal sealed class ExplorerDisk:IDisposable {
 
                 }
 
-                if(s.Path!=null){var info=new FileInfo(s.Path);if((info.Attributes&FileAttributes.ReparsePoint)!=0||info.Length!=s.SourceSize||info.LastWriteTimeUtc!=s.Stamp)throw new IOException("Source changed: "+s.Name);}
+                if(s.Path!=null){var info=new FileInfo(s.Path);if((info.Attributes&FileAttributes.ReparsePoint)!=0||info.Length!=s.SourceSize||info.LastWriteTimeUtc!=s.Stamp)throw new IOException(L.T("Source changed: ")+s.Name);}
 
                 using(var input=s.OpenSource!=null?s.OpenSource():s.Image!=null?s.Image.Open():s.PatchedData!=null?(Stream)new MemoryStream(s.PatchedData,false):new FileStream(s.Path,FileMode.Open,FileAccess.Read,FileShare.Read,s.Size<1024*1024?65536:1024*1024,FileOptions.SequentialScan)){
 
-                    if(input.Length!=s.Size)throw new IOException("Source changed: "+s.Name);long left=s.Size;
+                    if(input.Length!=s.Size)throw new IOException(L.T("Source changed: ")+s.Name);long left=s.Size;
 
                     foreach(uint id in node.Chain){
 
                         token.ThrowIfCancellationRequested();Array.Clear(buffer,0,buffer.Length);int wanted=(int)Math.Min(left,buffer.Length),got=0;
 
-                        while(got<wanted){int n=input.Read(buffer,got,wanted-got);if(n==0)throw new IOException("Short source read: "+s.Name);got+=n;}
+                        while(got<wanted){int n=input.Read(buffer,got,wanted-got);if(n==0)throw new IOException(L.T("Short source read: ")+s.Name);got+=n;}
 
-                        append(id,buffer);left-=got;copied+=got;progress("Adding "+s.Name+" | Files "+filesCopied+" / "+totalFiles,copied,total);
+                        append(id,buffer);left-=got;copied+=got;progress(L.T("Adding ")+s.Name+L.T(" | Files ")+filesCopied+" / "+totalFiles,copied,total);
 
                     }
 
                 }
 
-                if(s.Path!=null&&File.GetLastWriteTimeUtc(s.Path)!=s.Stamp)throw new IOException("Source changed: "+s.Name);filesCopied++;
+                if(s.Path!=null&&File.GetLastWriteTimeUtc(s.Path)!=s.Stamp)throw new IOException(L.T("Source changed: ")+s.Name);filesCopied++;
 
             }
 
@@ -464,17 +464,17 @@ internal sealed class ExplorerDisk:IDisposable {
 
             }
 
-            progress("Saving "+source.Name+" and checking directory metadata",copied,total);disk.Flush();
+            progress(L.T("Saving ")+source.Name+L.T(" and checking directory metadata"),copied,total);disk.Flush();
 
             // Verify new directory contents before making any root visible.
 
-            using(var sha=System.Security.Cryptography.SHA256.Create())foreach(var block in directoryBlocks)if(!sha.ComputeHash(disk.Read(block.Item1,volume.ClusterBytes,token)).SequenceEqual(block.Item2))throw new IOException("New directory read-back mismatch.");
+            using(var sha=System.Security.Cryptography.SHA256.Create())foreach(var block in directoryBlocks)if(!sha.ComputeHash(disk.Read(block.Item1,volume.ClusterBytes,token)).SequenceEqual(block.Item2))throw new IOException(L.T("New directory read-back mismatch."));
 
             fatStarted=true;PersistFat(allocated);
 
             long slot=FindSlot(parent);token.ThrowIfCancellationRequested();publishing=true;Publish(root.Entry,slot);
 
-            done=copied;completed=filesCopied;progress("Added "+source.Name+" | Files "+completed+" / "+totalFiles,done,total);
+            done=copied;completed=filesCopied;progress(L.T("Added ")+source.Name+L.T(" | Files ")+completed+" / "+totalFiles,done,total);
 
         }catch{
 
@@ -498,18 +498,18 @@ internal sealed class ExplorerDisk:IDisposable {
         foreach(var job in batch){long sector=job.Entry.Slot/512;byte[] bytes;if(!records.TryGetValue(sector,out bytes)){bytes=disk.Read(sector,512,commit);records.Add(sector,bytes);}int offset=(int)(job.Entry.Slot%512);Array.Clear(bytes,offset,64);bytes[offset]=0xe5;}
         foreach(var record in records)disk.Write(record.Key,record.Value,commit,false);
         disk.Flush();
-        foreach(var record in records)if(!disk.Read(record.Key,512,commit).SequenceEqual(record.Value))throw new IOException("Delete directory read-back mismatch. Reopen the drive before continuing.");
+        foreach(var record in records)if(!disk.Read(record.Key,512,commit).SequenceEqual(record.Value))throw new IOException(L.T("Delete directory read-back mismatch. Reopen the drive before continuing."));
         var freed=new List<uint>();foreach(var job in batch)foreach(uint id in job.Chain){SetFat(id,0);freed.Add(id);}
         var sectors=freed.Select(id=>(long)id*volume.Width/512).Distinct().OrderBy(x=>x).ToArray();var ranges=new List<Tuple<long,int>>();
         for(int at=0;at<sectors.Length;){int end=at+1;while(end<sectors.Length&&sectors[end]==sectors[end-1]+1&&end-at<2048)end++;int size=(end-at)*512;var bytes=new byte[size];Array.Copy(fat,sectors[at]*512,bytes,0,size);disk.Write(volume.Start+8+sectors[at],bytes,commit,false);ranges.Add(Tuple.Create(sectors[at],size));at=end;}
-        if(ranges.Count>0){disk.Flush();foreach(var range in ranges){var expected=new byte[range.Item2];Array.Copy(fat,range.Item1*512,expected,0,expected.Length);if(!disk.Read(volume.Start+8+range.Item1,expected.Length,commit).SequenceEqual(expected))throw new IOException("Delete allocation-table read-back mismatch. Reopen the drive before continuing.");}}
+        if(ranges.Count>0){disk.Flush();foreach(var range in ranges){var expected=new byte[range.Item2];Array.Copy(fat,range.Item1*512,expected,0,expected.Length);if(!disk.Read(volume.Start+8+range.Item1,expected.Length,commit).SequenceEqual(expected))throw new IOException(L.T("Delete allocation-table read-back mismatch. Reopen the drive before continuing."));}}
         if(freed.Count>0)nextFree=Math.Min(nextFree,freed.Min());
     }
     public void Delete(IEnumerable<XboxEntry> selected,Action<string,long,long> progress){
         GuardWrites(progress);var jobs=new List<DeleteJob>();var slots=new HashSet<long>();
-        Action<XboxEntry,int> collect=null;collect=(entry,depth)=>{token.ThrowIfCancellationRequested();if(entry.Slot<0||depth>64)throw new IOException("Cannot delete a partition root or damaged directory tree.");if(!slots.Add(entry.Slot))throw new IOException("Repeated delete selection or directory entry.");if(entry.Directory)foreach(var child in List(entry))collect(child,depth+1);jobs.Add(new DeleteJob{Entry=entry,Chain=Chain(entry)});};
-        progress("Counting items to delete",0,0);foreach(var entry in selected)collect(entry,0);
-        int done=0;try{while(done<jobs.Count){token.ThrowIfCancellationRequested();var batch=jobs.GetRange(done,Math.Min(256,jobs.Count-done));progress("Deleting "+batch[0].Entry.Name+" | Items "+done+" / "+jobs.Count,done,jobs.Count);CommitDeleteBatch(batch);done+=batch.Count;progress("Deleted "+batch[batch.Count-1].Entry.Name+" | Items "+done+" / "+jobs.Count,done,jobs.Count);}}
+        Action<XboxEntry,int> collect=null;collect=(entry,depth)=>{token.ThrowIfCancellationRequested();if(entry.Slot<0||depth>64)throw new IOException(L.T("Cannot delete a partition root or damaged directory tree."));if(!slots.Add(entry.Slot))throw new IOException(L.T("Repeated delete selection or directory entry."));if(entry.Directory)foreach(var child in List(entry))collect(child,depth+1);jobs.Add(new DeleteJob{Entry=entry,Chain=Chain(entry)});};
+        progress(L.T("Counting items to delete"),0,0);foreach(var entry in selected)collect(entry,0);
+        int done=0;try{while(done<jobs.Count){token.ThrowIfCancellationRequested();var batch=jobs.GetRange(done,Math.Min(256,jobs.Count-done));progress(L.T("Deleting ")+batch[0].Entry.Name+L.T(" | Items ")+done+" / "+jobs.Count,done,jobs.Count);CommitDeleteBatch(batch);done+=batch.Count;progress(L.T("Deleted ")+batch[batch.Count-1].Entry.Name+L.T(" | Items ")+done+" / "+jobs.Count,done,jobs.Count);}}
         catch{faulted=true;ownershipChecked=false;throw;}
     }
 
@@ -517,7 +517,7 @@ internal sealed class ExplorerDisk:IDisposable {
 
     bool ContainsFolder(XboxEntry source,uint destination,int depth){
 
-        if(depth>64)throw new IOException("Folder tree too deep.");if(!source.Directory)return false;if(source.First==destination)return true;
+        if(depth>64)throw new IOException(L.T("Folder tree too deep."));if(!source.Directory)return false;if(source.First==destination)return true;
 
         foreach(var child in List(source).Where(x=>x.Directory))if(ContainsFolder(child,destination,depth+1))return true;return false;
 
@@ -525,13 +525,13 @@ internal sealed class ExplorerDisk:IDisposable {
 
     XboxEntry[] TransferSelection(XboxEntry sourceParent,IEnumerable<XboxEntry> selection,XboxEntry destination){
 
-        if(!destination.Directory)throw new IOException("Drop onto a folder.");
+        if(!destination.Directory)throw new IOException(L.T("Drop onto a folder."));
 
         var actual=List(sourceParent);var items=selection.ToArray();var names=new HashSet<string>(List(destination).Select(x=>x.Name),StringComparer.OrdinalIgnoreCase);
 
-        foreach(var item in items){if(item.Slot<0||!actual.Any(x=>x.Slot==item.Slot&&x.First==item.First&&x.Size==item.Size&&x.Name==item.Name&&x.Directory==item.Directory))throw new IOException("The selected item changed. Refresh and select it again.");
+        foreach(var item in items){if(item.Slot<0||!actual.Any(x=>x.Slot==item.Slot&&x.First==item.First&&x.Size==item.Size&&x.Name==item.Name&&x.Directory==item.Directory))throw new IOException(L.T("The selected item changed. Refresh and select it again."));
 
-            if(!names.Add(item.Name))throw new IOException("Destination already contains "+item.Name+". Nothing overwritten.");if(ContainsFolder(item,destination.First,0))throw new IOException("Cannot put a folder inside itself.");
+            if(!names.Add(item.Name))throw new IOException(L.T("Destination already contains ")+item.Name+L.T(". Nothing overwritten."));if(ContainsFolder(item,destination.First,0))throw new IOException(L.T("Cannot put a folder inside itself."));
 
         }return items;
 
@@ -549,9 +549,9 @@ internal sealed class ExplorerDisk:IDisposable {
 
             try{Metadata(newSlot,original,CancellationToken.None);Metadata(item.Slot,removed,CancellationToken.None);}
 
-            catch{faulted=true;ownershipChecked=false;try{Metadata(item.Slot,original,CancellationToken.None);Metadata(newSlot,removed,CancellationToken.None);}catch{throw new IOException("Move interrupted; directory recovery is required. File data has not been freed.");}throw;}
+            catch{faulted=true;ownershipChecked=false;try{Metadata(item.Slot,original,CancellationToken.None);Metadata(newSlot,removed,CancellationToken.None);}catch{throw new IOException(L.T("Move interrupted; directory recovery is required. File data has not been freed."));}throw;}
 
-            done++;progress("Moving "+item.Name+" | Items "+done+" / "+items.Length,done,items.Length);
+            done++;progress(L.T("Moving ")+item.Name+L.T(" | Items ")+done+" / "+items.Length,done,items.Length);
 
         }
 
@@ -563,21 +563,21 @@ internal sealed class ExplorerDisk:IDisposable {
 
         GuardWrites(progress);var items=TransferSelection(sourceParent,selection,destination);long total=0,required=0,done=0;int totalFiles=0,completed=0;
 
-        Func<XboxEntry,int,DiskSource> collect=null;collect=(entry,depth)=>{token.ThrowIfCancellationRequested();if(depth>64)throw new IOException("Folder tree too deep.");var node=new DiskSource{Entry=entry};
+        Func<XboxEntry,int,DiskSource> collect=null;collect=(entry,depth)=>{token.ThrowIfCancellationRequested();if(depth>64)throw new IOException(L.T("Folder tree too deep."));var node=new DiskSource{Entry=entry};
 
             if(entry.Directory){foreach(var child in List(entry))node.Children.Add(collect(child,depth+1));required+=Math.Max(1,(node.Children.Count+1L)*64/volume.ClusterBytes+1)*volume.ClusterBytes;}
 
             else{Chain(entry);total+=entry.Size;required+=((entry.Size+(long)volume.ClusterBytes-1)/volume.ClusterBytes)*volume.ClusterBytes;totalFiles++;}return node;
 
-        };var sources=items.Select(x=>collect(x,0)).ToArray();required+=volume.ClusterBytes*((items.Length*64L+volume.ClusterBytes-1)/volume.ClusterBytes+1);if(required>FreeBytes)throw new IOException("Not enough free space.");
+        };var sources=items.Select(x=>collect(x,0)).ToArray();required+=volume.ClusterBytes*((items.Length*64L+volume.ClusterBytes-1)/volume.ClusterBytes+1);if(required>FreeBytes)throw new IOException(L.T("Not enough free space."));
 
         Action<DiskSource,XboxEntry> copy=null;copy=(node,parent)=>{token.ThrowIfCancellationRequested();if(node.Entry.Directory){var folder=NewFolder(parent,node.Entry.Name);foreach(var child in node.Children)copy(child,folder);return;}
 
             long slot=FindSlot(parent);var sourceChain=Chain(node.Entry);int count=checked((int)((node.Entry.Size+(long)volume.ClusterBytes-1)/volume.ClusterBytes));var allocated=Allocate(count);bool publishing=false;
 
-            try{long left=node.Entry.Size;for(int i=0;i<count;i++){token.ThrowIfCancellationRequested();var bytes=disk.Read(Sector(sourceChain[i]),volume.ClusterBytes,token);int length=(int)Math.Min(left,volume.ClusterBytes);if(length<bytes.Length)Array.Clear(bytes,length,bytes.Length-length);disk.Write(Sector(allocated[i]),bytes,token,false);left-=length;done+=length;progress("Copying "+node.Entry.Name+" | Files "+completed+" / "+totalFiles,done,total);}
+            try{long left=node.Entry.Size;for(int i=0;i<count;i++){token.ThrowIfCancellationRequested();var bytes=disk.Read(Sector(sourceChain[i]),volume.ClusterBytes,token);int length=(int)Math.Min(left,volume.ClusterBytes);if(length<bytes.Length)Array.Clear(bytes,length,bytes.Length-length);disk.Write(Sector(allocated[i]),bytes,token,false);left-=length;done+=length;progress(L.T("Copying ")+node.Entry.Name+L.T(" | Files ")+completed+" / "+totalFiles,done,total);}
 
-                disk.Flush();PersistFat(allocated);publishing=true;Publish(new XboxEntry{Name=node.Entry.Name,First=count==0?0:allocated[0],Size=node.Entry.Size},slot);completed++;progress("Copied "+completed+" / "+totalFiles+" files",done,total);
+                disk.Flush();PersistFat(allocated);publishing=true;Publish(new XboxEntry{Name=node.Entry.Name,First=count==0?0:allocated[0],Size=node.Entry.Size},slot);completed++;progress(L.T("Copied ")+completed+" / "+totalFiles+L.T(" files"),done,total);
 
             }catch{faulted=true;ownershipChecked=false;throw;}finally{if(!publishing){try{Free(allocated);}catch{faulted=true;}}}
 
@@ -591,17 +591,17 @@ internal sealed class ExplorerDisk:IDisposable {
 
         var report=new StringBuilder();int errors=0,warnings=0,printed=0;bool complete=true;
 
-        report.AppendLine("RRFF read-only FATX filesystem check");report.AppendLine("Started: "+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        report.AppendLine("RRFF read-only FATX filesystem check");report.AppendLine(L.T("Started: ")+DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
-        report.AppendLine("This checks filesystem metadata; it is not a SMART test or a full file-content/media scan.");
+        report.AppendLine(L.T("This checks filesystem metadata; it is not a SMART test or a full file-content/media scan."));
 
-        Action<string,bool> issue=(message,error)=>{if(error)errors++;else warnings++;if(printed++<2000)report.AppendLine((error?"ERROR: ":"WARNING: ")+message);};
+        Action<string,bool> issue=(message,error)=>{if(error)errors++;else warnings++;if(printed++<2000)report.AppendLine((error?L.T("ERROR: "):L.T("WARNING: "))+message);};
 
         foreach(string message in headerIssues)issue(message,true);
 
         foreach(var partition in Partitions){
 
-            token.ThrowIfCancellationRequested();report.AppendLine();report.AppendLine("Partition "+partition.Name+":");
+            token.ThrowIfCancellationRequested();report.AppendLine();report.AppendLine(L.T("Partition ")+partition.Name+":");
 
             try{
 
@@ -609,39 +609,39 @@ internal sealed class ExplorerDisk:IDisposable {
 
                 Action<XboxEntry,string,int> visit=null;visit=(entry,path,depth)=>{
 
-                    token.ThrowIfCancellationRequested();if(depth>64||owner>=2000000){issue(path+": inspection limit exceeded",true);partitionComplete=false;return;}int current=++owner;
+                    token.ThrowIfCancellationRequested();if(depth>64||owner>=2000000){issue(path+L.T(": inspection limit exceeded"),true);partitionComplete=false;return;}int current=++owner;
 
                     if(entry.Directory)folders++;else files++;
 
                     var chain=new HashSet<uint>();uint id=entry.First;long clusters=0;bool valid=true;
 
-                    if(id==0){if(entry.Directory||entry.Size!=0){issue(path+": missing cluster chain",true);valid=false;}}
+                    if(id==0){if(entry.Directory||entry.Size!=0){issue(path+L.T(": missing cluster chain"),true);valid=false;}}
 
                     while(id!=0){
 
-                        token.ThrowIfCancellationRequested();if(id<1||id>volume.Count){issue(path+": cluster is outside partition",true);valid=false;break;}
+                        token.ThrowIfCancellationRequested();if(id<1||id>volume.Count){issue(path+L.T(": cluster is outside partition"),true);valid=false;break;}
 
-                        if(!chain.Add(id)){issue(path+": looping cluster chain",true);valid=false;break;}
+                        if(!chain.Add(id)){issue(path+L.T(": looping cluster chain"),true);valid=false;break;}
 
-                        int previous;if(owners.TryGetValue(id,out previous)){issue(path+": cluster "+id+" is shared with another entry (cross-link)",true);}else owners.Add(id,current);
+                        int previous;if(owners.TryGetValue(id,out previous)){issue(path+L.T(": cluster ")+id+L.T(" is shared with another entry (cross-link)"),true);}else owners.Add(id,current);
 
                         clusters++;uint next=GetFat(id);if(next>=(volume.Width==4?0xFFFFFFF8u:0xFFF8u))break;
 
-                        if(next==0){issue(path+": file chain points to a free cluster",true);valid=false;break;}
+                        if(next==0){issue(path+L.T(": file chain points to a free cluster"),true);valid=false;break;}
 
                         id=next;
 
                     }
 
-                    if(!entry.Directory){long needed=(entry.Size+(long)volume.ClusterBytes-1)/volume.ClusterBytes;if(clusters<needed)issue(path+": file size exceeds allocated chain",true);else if(clusters>needed)issue(path+": extra allocated clusters beyond file size",false);}
+                    if(!entry.Directory){long needed=(entry.Size+(long)volume.ClusterBytes-1)/volume.ClusterBytes;if(clusters<needed)issue(path+L.T(": file size exceeds allocated chain"),true);else if(clusters>needed)issue(path+L.T(": extra allocated clusters beyond file size"),false);}
 
                     if(entry.Directory){if(!valid||!directoryRoots.Add(entry.First)){partitionComplete=false;return;}
 
-                        try{foreach(var child in List(entry))visit(child,path+"\\"+child.Name,depth+1);}catch(OperationCanceledException){throw;}catch(Exception e){partitionComplete=false;issue(path+": directory could not be fully read: "+e.Message,true);}
+                        try{foreach(var child in List(entry))visit(child,path+"\\"+child.Name,depth+1);}catch(OperationCanceledException){throw;}catch(Exception e){partitionComplete=false;issue(path+L.T(": directory could not be fully read: ")+e.Message,true);}
 
                     }
 
-                    if(owner%128==0)progress("Checking "+partition.Name+": directories and file chains | "+files.ToString("N0")+" files",0,0);
+                    if(owner%128==0)progress(L.T("Checking ")+partition.Name+": directories and file chains | "+files.ToString("N0")+L.T(" files"),0,0);
 
                 };visit(Root,partition.Name+":",0);
 
@@ -649,31 +649,31 @@ internal sealed class ExplorerDisk:IDisposable {
 
                     token.ThrowIfCancellationRequested();uint value=GetFat(id);if(value==0)free++;else if(value==(volume.Width==4?0xFFFFFFF7u:0xFFF7u))bad++;else{allocated++;if(!owners.ContainsKey(id))orphaned++;}
 
-                    if(id%65536==0)progress("Checking "+partition.Name+": allocation map",id,volume.Count);
+                    if(id%65536==0)progress(L.T("Checking ")+partition.Name+L.T(": allocation map"),id,volume.Count);
 
                 }
 
-                if(orphaned>0)issue(orphaned.ToString("N0")+(partitionComplete?" orphaned allocated clusters":" allocated clusters not accounted for; unreadable directories prevent a definite orphan count"),partitionComplete);
+                if(orphaned>0)issue(orphaned.ToString("N0")+(partitionComplete?L.T(" orphaned allocated clusters"):L.T(" allocated clusters not accounted for; unreadable directories prevent a definite orphan count")),partitionComplete);
 
-                if(bad>0)issue(bad.ToString("N0")+" clusters marked bad in the FAT",false);
+                if(bad>0)issue(bad.ToString("N0")+L.T(" clusters marked bad in the FAT"),false);
 
-                report.AppendLine("Files: "+files.ToString("N0")+" | Folders (including root): "+folders.ToString("N0"));
+                report.AppendLine(L.T("Files: ")+files.ToString("N0")+L.T(" | Folders (including root): ")+folders.ToString("N0"));
 
-                report.AppendLine("Free: "+(free*volume.ClusterBytes/1000000000.0).ToString("0.00")+" GB | Allocated clusters: "+allocated.ToString("N0"));
+                report.AppendLine(L.T("Free: ")+(free*volume.ClusterBytes/1000000000.0).ToString("0.00")+" GB | Allocated clusters: "+allocated.ToString("N0"));
 
-                if(!partitionComplete){complete=false;report.AppendLine("Partition inspection incomplete.");}
+                if(!partitionComplete){complete=false;report.AppendLine(L.T("Partition inspection incomplete."));}
 
-            }catch(OperationCanceledException){throw;}catch(Exception e){complete=false;issue(partition.Name+": could not inspect partition: "+e.Message,true);}
+            }catch(OperationCanceledException){throw;}catch(Exception e){complete=false;issue(partition.Name+L.T(": could not inspect partition: ")+e.Message,true);}
 
         }
 
-        if(printed>2000)report.AppendLine("Detail list limited to 2,000 issues; totals include all detected issues.");
+        if(printed>2000)report.AppendLine(L.T("Detail list limited to 2,000 issues; totals include all detected issues."));
 
-        report.AppendLine();report.AppendLine("Errors: "+errors+" | Warnings: "+warnings);
+        report.AppendLine();report.AppendLine(L.T("Errors: ")+errors+L.T(" | Warnings: ")+warnings);
 
-        report.AppendLine(!complete?"RESULT: INCOMPLETE  -  some metadata could not be inspected.":errors>0?"RESULT: FILESYSTEM PROBLEMS FOUND.":warnings>0?"RESULT: CHECK COMPLETED WITH WARNINGS.":"RESULT: NO FATX METADATA PROBLEMS FOUND.");
+        report.AppendLine(!complete?L.T("RESULT: INCOMPLETE  -  some metadata could not be inspected."):errors>0?L.T("RESULT: FILESYSTEM PROBLEMS FOUND."):warnings>0?L.T("RESULT: CHECK COMPLETED WITH WARNINGS."):L.T("RESULT: NO FATX METADATA PROBLEMS FOUND."));
 
-        report.AppendLine("No repair or disk-write operations were performed.");return report.ToString();
+        report.AppendLine(L.T("No repair or disk-write operations were performed."));return report.ToString();
 
     }
 

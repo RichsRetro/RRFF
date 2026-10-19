@@ -1,8 +1,7 @@
-RRFF source and build information
+RRFF v1.1.1 source
 
-WindowsApp contains the Windows formatter sources, embedded clean Xbox payloads and project licence files. On Windows with .NET Framework build tools, run build.ps1 in that folder. The resulting managed app belongs in App/RRFF.App.exe in the release layout. Its runtime configuration targets .NET Framework 4.8.
-NativeSetup contains the native prerequisite checker, portable launcher and per-user installer. Build with x86_64 MinGW-w64 g++ and windres available on PATH using build.ps1. Static runtime linking avoids a separate compiler-runtime installation on the user's PC. These native entry points have no CLR runtime header and import only Windows system DLLs.
-Licenses contains separate original-project and third-party terms. kernel-patcher-source reproduces the supplied patcher's complete code/data region; see its own GPL text and build instructions.
-The packaged Xbox executable resources use neutral public build paths. Executable section bytes and their load addresses match the tested binaries; the local build-directory prefix was changed only in diagnostic strings before regenerating the XBE container and its checksums.
+WindowsApp contains the managed formatter, Localization.cs, translations.json, all compatibility-report language resources and embedded dashboard payloads. Run build.ps1 with Windows .NET Framework build tools, then place the output in App/RRFF.App.exe.
 
-No games, BIOSes, EEPROMs, user preferences, diagnostic logs, private device identifiers or build-machine paths are included.
+NativeSetup contains the standalone native launcher, prerequisite checker and installer. localization.hpp uses native Windows APIs to read the system language and saved preference; the .NET check and its translated prompts do not depend on .NET. Run build.ps1 with the MinGW-w64 tools on PATH.
+
+The matching dashboard and nxdk sources are in RRXD-Source.zip. Project and third-party terms are in Licenses. Public executable resources use neutral diagnostic build paths.

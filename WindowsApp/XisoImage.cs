@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 using System.Collections.Generic;
 
@@ -32,13 +32,13 @@ internal sealed class XisoImage {
 
     static long Align(long n,int boundary){return checked((n+boundary-1)/boundary*boundary);}
 
-    static byte[] NameBytes(string name){if(name.Length==0||name.Length>255||name.Any(c=>c<32||c>126||c=='/'||c=='\\'))throw new IOException("Unsupported XISO filename: "+name);return Encoding.ASCII.GetBytes(name);}
+    static byte[] NameBytes(string name){if(name.Length==0||name.Length>255||name.Any(c=>c<32||c>126||c=='/'||c=='\\'))throw new IOException(L.T("Unsupported XISO filename: ")+name);return Encoding.ASCII.GetBytes(name);}
 
     Entry Scan(string path,int depth){
 
-        cancel.ThrowIfCancellationRequested();if(depth>64)throw new IOException("Game folder is too deep.");
+        cancel.ThrowIfCancellationRequested();if(depth>64)throw new IOException(L.T("Game folder is too deep."));
 
-        var info=new FileInfo(path);var attr=File.GetAttributes(path);if((attr&FileAttributes.ReparsePoint)!=0)throw new IOException("Links/junctions are not supported in game images.");
+        var info=new FileInfo(path);var attr=File.GetAttributes(path);if((attr&FileAttributes.ReparsePoint)!=0)throw new IOException(L.T("Links/junctions are not supported in game images."));
 
         var e=new Entry{Path=path,Name=System.IO.Path.GetFileName(path),Directory=(attr&FileAttributes.Directory)!=0};
 
@@ -46,11 +46,11 @@ internal sealed class XisoImage {
 
             var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);int offset=0;
 
-            foreach(var child in e.Children){if(!names.Add(child.Name))throw new IOException("Case-insensitive image-name collision: "+child.Name);child.Encoded=NameBytes(child.Name);int bytes=(int)Align(14+child.Encoded.Length,4);if(offset%2048+bytes>2048)offset=(int)Align(offset,2048);child.RecordOffset=offset;offset+=bytes;}
+            foreach(var child in e.Children){if(!names.Add(child.Name))throw new IOException(L.T("Case-insensitive image-name collision: ")+child.Name);child.Encoded=NameBytes(child.Name);int bytes=(int)Align(14+child.Encoded.Length,4);if(offset%2048+bytes>2048)offset=(int)Align(offset,2048);child.RecordOffset=offset;offset+=bytes;}
 
-            if(offset>0x3fffc)throw new IOException("An XISO directory exceeds its entry-offset limit.");e.Table=new byte[offset];e.Size=offset;
+            if(offset>0x3fffc)throw new IOException(L.T("An XISO directory exceeds its entry-offset limit."));e.Table=new byte[offset];e.Size=offset;
 
-        }else{e.Size=info.Length;e.Stamp=info.LastWriteTimeUtc;if(e.Size>uint.MaxValue)throw new IOException("Game file exceeds the XDVDFS size limit.");files.Add(e);}
+        }else{e.Size=info.Length;e.Stamp=info.LastWriteTimeUtc;if(e.Size>uint.MaxValue)throw new IOException(L.T("Game file exceeds the XDVDFS size limit."));files.Add(e);}
 
         return e;
 
@@ -72,7 +72,7 @@ internal sealed class XisoImage {
 
         foreach(var e in Preorder(dir.Children)){int bytes=(int)Align(14+e.Encoded.Length,4);if(offset%2048+bytes>2048)offset=(int)Align(offset,2048);e.RecordOffset=offset;offset+=bytes;}
 
-        if(offset>0x3fffc)throw new IOException("An XISO directory exceeds its entry-offset limit.");dir.Table=new byte[offset];dir.Size=offset;
+        if(offset>0x3fffc)throw new IOException(L.T("An XISO directory exceeds its entry-offset limit."));dir.Table=new byte[offset];dir.Size=offset;
 
         Action<int,int> write=null;write=(lo,hi)=>{if(lo>=hi)return;int mid=(lo+hi)/2;var e=dir.Children[mid];int p=e.RecordOffset;
 
@@ -98,7 +98,7 @@ internal sealed class XisoImage {
 
         foreach(var f in files){f.Sector=checked((uint)(position/2048));position+=Align(f.Size,2048);}
 
-        Length=Align(position,2048);if(Length>uint.MaxValue)throw new IOException("This release needs a split XISO; automatic conversion currently supports single-file images up to 4 GiB.");
+        Length=Align(position,2048);if(Length>uint.MaxValue)throw new IOException(L.T("This release needs a split XISO; automatic conversion currently supports single-file images up to 4 GiB."));
 
         var header=new byte[2048];var magic=Encoding.ASCII.GetBytes("MICROSOFT*XBOX*MEDIA");Array.Copy(magic,header,20);Put(header,20,top.Sector);Put(header,24,checked((uint)top.Size));Array.Copy(BitConverter.GetBytes(DateTime.UtcNow.ToFileTimeUtc()),0,header,28,8);Array.Copy(magic,0,header,2028,20);pieces.Add(new Piece{Offset=65536,Size=2048,Data=header});
 
@@ -112,7 +112,7 @@ internal sealed class XisoImage {
 
     public static byte[] Launcher(uint titleId,string title){
 
-        byte[] data;using(var stream=Assembly.GetExecutingAssembly().GetManifestResourceStream("xiso-launcher.xbe"))using(var memory=new MemoryStream()){if(stream==null)throw new IOException("Missing XISO launcher.");stream.CopyTo(memory);data=memory.ToArray();}
+        byte[] data;using(var stream=Assembly.GetExecutingAssembly().GetManifestResourceStream("xiso-launcher.xbe"))using(var memory=new MemoryStream()){if(stream==null)throw new IOException(L.T("Missing XISO launcher."));stream.CopyTo(memory);data=memory.ToArray();}
 
         int cert=checked((int)(BitConverter.ToUInt32(data,0x118)-BitConverter.ToUInt32(data,0x104)));Put(data,cert+8,titleId);Array.Clear(data,cert+12,80);byte[] name=Encoding.Unicode.GetBytes(title.Substring(0,Math.Min(39,title.Length)));Array.Copy(name,0,data,cert+12,name.Length);return data;
 
@@ -124,7 +124,7 @@ internal sealed class XisoImage {
 
         public ImageStream(XisoImage value){image=value;}
 
-        void CloseFile(){if(current!=null){var e=image.pieces[index].File;current.Dispose();current=null;if(File.GetLastWriteTimeUtc(e.Path)!=e.Stamp)throw new IOException("Game source changed: "+e.Name);}}
+        void CloseFile(){if(current!=null){var e=image.pieces[index].File;current.Dispose();current=null;if(File.GetLastWriteTimeUtc(e.Path)!=e.Stamp)throw new IOException(L.T("Game source changed: ")+e.Name);}}
 
         public override int Read(byte[] buffer,int offset,int count){image.cancel.ThrowIfCancellationRequested();int wanted=(int)Math.Min(count,image.Length-position),remaining=wanted;
 
@@ -138,9 +138,9 @@ internal sealed class XisoImage {
 
                 if(piece.Data!=null)Array.Copy(piece.Data,position-piece.Offset,buffer,offset,n);
 
-                else{if(current==null){var e=piece.File;var info=new FileInfo(e.Path);if((info.Attributes&FileAttributes.ReparsePoint)!=0||info.Length!=e.Size||info.LastWriteTimeUtc!=e.Stamp)throw new IOException("Game source changed: "+e.Name);current=new FileStream(e.Path,FileMode.Open,FileAccess.Read,FileShare.Read,65536,FileOptions.SequentialScan);}
+                else{if(current==null){var e=piece.File;var info=new FileInfo(e.Path);if((info.Attributes&FileAttributes.ReparsePoint)!=0||info.Length!=e.Size||info.LastWriteTimeUtc!=e.Stamp)throw new IOException(L.T("Game source changed: ")+e.Name);current=new FileStream(e.Path,FileMode.Open,FileAccess.Read,FileShare.Read,65536,FileOptions.SequentialScan);}
 
-                    int got=0;while(got<n){int read=current.Read(buffer,offset+got,n-got);if(read==0)throw new IOException("Short game source read.");got+=read;}}
+                    int got=0;while(got<n){int read=current.Read(buffer,offset+got,n-got);if(read==0)throw new IOException(L.T("Short game source read."));got+=read;}}
 
                 offset+=n;remaining-=n;position+=n;
 

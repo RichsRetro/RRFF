@@ -65,7 +65,7 @@ internal static class FolderPicker {
 
             uint options;dialog.GetOptions(out options);dialog.SetOptions(options|0x20u|0x40u|0x800u|0x8u|0x02000000u);
 
-            dialog.SetTitle(contentsOnly?"Choose source  -  its CONTENTS go directly into "+partition+":\\":"Choose your "+partition+" folder");dialog.SetOkButtonLabel(contentsOnly?"Use folder contents":"Select folder");
+            dialog.SetTitle(contentsOnly?L.T("Choose source  -  its CONTENTS go directly into ")+partition+":\\":L.T("Choose your ")+partition+L.T(" folder"));dialog.SetOkButtonLabel(contentsOnly?L.T("Use folder contents"):L.T("Select folder"));
 
             // Distinct Windows dialog identity plus an explicit per-partition last folder.
 
@@ -83,7 +83,7 @@ internal static class FolderPicker {
 
             string selected;try{selected=Marshal.PtrToStringUni(name);}finally{Marshal.FreeCoTaskMem(name);}
 
-            if(!Directory.Exists(selected))throw new IOException("The selected folder is unavailable.");
+            if(!Directory.Exists(selected))throw new IOException(L.T("The selected folder is unavailable."));
 
             try{string file=MemoryFile(partition);Directory.CreateDirectory(Path.GetDirectoryName(file));File.WriteAllText(file,selected);}catch(IOException){}catch(UnauthorizedAccessException){}
 

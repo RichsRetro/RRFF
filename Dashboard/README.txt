@@ -1,7 +1,1 @@
-Rich's Retro XDASH (RRXD) v1.1.0
-
-Dashboard source includes the Xbox-tested scrolling fix in NevolutionX/Sources/menu.cpp. Branding and game-patches remain beside NevolutionX.
-
-Build from NevolutionX using the bundled nxdk sources and its documented compiler/toolchain prerequisites. Set NXDK_DIR to the neighbouring nxdk directory, activate nxdk/bin/activate for your shell, and run make. See nxdk documentation for setup.
-
-Public binaries have neutral diagnostic build paths and regenerated XBE section digests; executable section bytes remain identical to the Xbox-tested build.
+RRXD v1.1.1: six-language dashboard menus and a saved interface language independent of console game language. Restart XDASH after changing the language to refresh cached text. Full matching dashboard and nxdk sources are in RRXD-Source.zip on the release page. Build with NXDK_DIR pointing to nxdk, with branding and game-patches beside NevolutionX.
