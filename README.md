@@ -188,3 +188,11 @@ Explorer now has Back to return to the first selection screen. Back is disabled 
 XDASH has Settings → Dashboard language, independently of the console game-language setting. System default follows the console language; restart XDASH to refresh all cached text after changing the interface language. Unsupported languages fall back to English. File names, game names, paths and machine status identifiers stay unchanged. Windows-owned prompts and Microsoft’s own installer follow their system/provider language.
 
 See RELEASE-NOTES.md for update instructions, including preserving an existing Xbox configuration.
+
+## Portable preferences
+
+On first portable launch, choose Accept to save previously used folder locations and language preferences in `RRFF-preferences` beside RRFF.exe. Acceptance is saved there too, so later launches do not ask again. Decline continues with session-only folder memory. If the folder cannot be written, preferences remain session-only. The installed app uses its normal settings location.
+
+## Windows v1.1.2
+
+Portable folder preferences now use an explicit Accept / Decline prompt. The bundled Xbox dashboard remains v1.1.1. See RELEASE-NOTES.md for details.

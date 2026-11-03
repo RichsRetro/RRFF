@@ -44,7 +44,6 @@ internal static class FolderPicker {
 
     [DllImport("shell32.dll",CharSet=CharSet.Unicode,PreserveSig=false)]static extern void SHCreateItemFromParsingName(string path,IntPtr context,ref Guid iid,out Item item);
 
-    static string MemoryFile(char partition){return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"RichsRetro","RRXDFormatter","last-"+partition+"-folder.txt");}
 
     public static Task<string> ChooseAsync(IWin32Window owner,char partition,string current,Action<string> log){
         IntPtr handle=owner.Handle;var completion=new TaskCompletionSource<string>();
@@ -57,7 +56,7 @@ internal static class FolderPicker {
 
         string initial=current;
 
-        if(String.IsNullOrEmpty(initial)||!Directory.Exists(initial))try{initial=File.ReadAllText(MemoryFile(partition)).Trim();}catch(IOException){}catch(UnauthorizedAccessException){}
+        if(String.IsNullOrEmpty(initial)||!Directory.Exists(initial))try{initial=PortablePreferences.ReadFolder(partition);}catch(IOException){}catch(UnauthorizedAccessException){}
 
         stage("creating Windows dialog");var dialog=(Dialog)new FileOpenDialog();Item result=null,folder=null;
 
@@ -85,7 +84,7 @@ internal static class FolderPicker {
 
             if(!Directory.Exists(selected))throw new IOException(L.T("The selected folder is unavailable."));
 
-            try{string file=MemoryFile(partition);Directory.CreateDirectory(Path.GetDirectoryName(file));File.WriteAllText(file,selected);}catch(IOException){}catch(UnauthorizedAccessException){}
+            PortablePreferences.SaveFolder(partition,selected);
 
             stage("destination selected");return selected;
 

@@ -28,11 +28,12 @@ static class Program {
 
     static readonly object LogLock=new object();
 
-    internal static void SaveLog(string text){try{lock(LogLock){Directory.CreateDirectory(LogFolder);File.AppendAllText(LogPath,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+" "+text+Environment.NewLine);}}catch{}}
+    internal static void SaveLog(string text){if(PortablePreferences.Portable)return;try{lock(LogLock){Directory.CreateDirectory(LogFolder);File.AppendAllText(LogPath,DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")+" "+text+Environment.NewLine);}}catch{}}
 
     internal static bool SaveResult(string status,string text){
 
         SaveLog(status+": "+text);
+        if(PortablePreferences.Portable)return true;
 
         try{
 
@@ -50,6 +51,7 @@ static class Program {
 
     [STAThread]static void Main(){
 
+        PortablePreferences.LoadConsent();
         L.Initialize();
         SaveLog("START "+Application.ExecutablePath);
 
@@ -58,6 +60,7 @@ static class Program {
         Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);
 
         try{
+            PortablePreferences.Ask();
             while(true){
                 bool explore;
                 using(var choice=new StartChoice()){var selection=choice.ShowDialog();if(selection==DialogResult.Retry)continue;if(selection!=DialogResult.OK)break;explore=choice.Explore;}
@@ -69,7 +72,7 @@ static class Program {
             SaveLog("WINDOW CLOSED");
         }
 
-        catch(Exception e){SaveLog("FATAL: "+e);MessageBox.Show(L.T("The formatter stopped unexpectedly. Details were saved to ")+LogPath,L.T("RRFF formatter error"));}
+        catch(Exception e){SaveLog("FATAL: "+e);MessageBox.Show(PortablePreferences.Portable?L.T("The formatter stopped unexpectedly.")+"\n\n"+e.Message:L.T("The formatter stopped unexpectedly. Details were saved to ")+LogPath,L.T("RRFF formatter error"));}
 
     }
 
